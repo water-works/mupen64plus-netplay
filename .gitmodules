@@ -29,3 +29,4 @@
 [submodule "protobuf"]
 	path = protobuf
 	url = https://github.com/google/protobuf
+  ignore = dirty
