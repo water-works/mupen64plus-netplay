@@ -30,3 +30,6 @@
 	path = protobuf
 	url = https://github.com/google/protobuf
   ignore = dirty
+[submodule "netplay/server/jars"]
+	path = netplay/server/jars
+	url = https://github.com/water-works/mupen64plus-netplay-server-jars
