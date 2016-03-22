@@ -1,0 +1,32 @@
+[submodule "mupen64plus-core"]
+	path = mupen64plus-core
+	url = https://github.com/water-works/mupen64plus-core
+  ignore = dirty
+[submodule "googletest"]
+	path = googletest
+	url = https://github.com/google/googletest
+  ignore = dirty
+[submodule "grpc"]
+	path = grpc
+	url = https://github.com/grpc/grpc
+  ignore = dirty
+[submodule "protobuf"]
+	path = protobuf
+	url = https://github.com/google/protobuf
+  ignore = dirty
+[submodule "mupen64plus-ui-console"]
+	path = mupen64plus-ui-console
+	url = https://github.com/water-works/mupen64plus-ui-console
+  ignore = dirty
+[submodule "grpc-java-build-wrapper"]
+	path = grpc-java-build-wrapper
+	url = https://github.com/water-works/grpc-java-build-wrapper
+  ignore = dirty
+[submodule "glog"]
+	path = glog
+	url = https://github.com/google/glog
+  ignore = dirty
+[submodule "gflags"]
+	path = gflags
+	url = https://github.com/gflags/gflags
+  ignore = dirty

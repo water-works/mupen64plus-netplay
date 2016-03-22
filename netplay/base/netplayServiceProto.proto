@@ -1,0 +1,324 @@
+syntax = "proto3";
+
+option java_package = "netplayprotos";
+
+// -----------------------------------------------------------------------------
+// Ping
+
+// Next ID: 1
+message PingPB {}
+
+// -----------------------------------------------------------------------------
+// MakeConsole
+//
+// Request that the server create a new virtual console.
+
+// Next ID: 4
+message MakeConsoleRequestPB {
+  // No key fields
+
+  // Human-readable console title. Can be empty, can contain explitives. Only
+  // used for debug output.
+  string console_title = 1;
+  // Human-readable ROM name. Only used for debug output.
+  string rom_name = 2;
+  // MD5 of ROM file. Used to ensure consistency between players.
+  bytes rom_file_md5 = 3;
+}
+
+// Next ID: 5
+message MakeConsoleResponsePB {
+  // Key fields
+  // Enum describing success or failure reasons.
+  enum Status {
+    UNKNOWN = 0;
+    SUCCESS = 1;
+    UNSPECIFIED_FAILURE = 2;
+  }
+  Status status = 3;
+  // Unique identifier for the console on the server. Not set if status is
+  // anything other than SUCCESS.
+  int64 console_id = 2;
+  // End key fields
+
+  // Human-readable messages optionally used to describe status.
+  repeated string messages = 4;
+}
+
+// -----------------------------------------------------------------------------
+// PlugController
+//
+// Request one or more ports on a virtual console.
+
+// Next ID: 6
+enum Port {
+  UNKNOWN = 0;
+  PORT_1 = 1;
+  PORT_2 = 2;
+  PORT_3 = 3;
+  PORT_4 = 4;
+  PORT_ANY = 5;
+}
+
+// Next ID: 8
+message PlugControllerRequestPB {
+  // Key fields
+  // Unique console ID
+  int64 console_id = 1;
+  // End key fields
+
+  // The requested ports.
+  Port requested_port_1 = 2;
+  Port requested_port_2 = 3;
+  Port requested_port_3 = 4;
+  Port requested_port_4 = 5;
+
+  // MD5 of running hash. Used to ensure consistency between clients.
+  bytes rom_file_md5 = 6;
+
+  // The number of frames of delay this client intends to use.
+  int32 delay_frames = 7;
+}
+
+// Next ID: 7
+message PlugControllerResponsePB {
+  // Key fields
+  // Unique console ID. Will match console ID sent in the response.
+  int64 console_id = 1;
+  // End key fields
+
+  // Enum describing the success or failure reasons.
+  // Next ID: 6
+  enum Status {
+    UNKNOWN = 0;
+    SUCCESS = 1;
+    // Catchall for unknown or unspecified failure reasons.
+    UNSPECIFIED_FAILURE = 2;
+    // The specified MD5 hash does not match the game's hash.
+    ROM_MD5_MISMATCH = 3;
+    // No ports were requested.
+    NO_PORTS_REQUESTED = 4;
+    // The request failed because the requested port configuration could not be
+    // satisfied. See rejection_reasons below for details on why the request was
+    // rejected.
+    PORT_REQUEST_REJECTED = 5;
+  }
+  Status status = 2;
+
+  // The ports the player was assigned. Empty if the status is not SUCCESS.
+  repeated Port port = 3;
+
+  // On SUCCESS, populated with the client ID used to identify this client to
+  // the server.
+  int64 client_id = 4;
+
+  // Next ID: 3
+  message PortRejectionPB {
+    // Key fields
+    Port port = 1;
+    // End key fields
+
+    // Next ID: 4
+    enum Reason {
+      UNKNOWN = 0;
+      // Indicates this port was not the reason the request was rejected.
+      ACCEPTABLE = 1;
+      // Indicates that a specifically requested port was already occupied.
+      PORT_ALREADY_OCCUPIED = 2;
+      // Returned in response to a PORT_ANY request when all ports are already
+      // satisfied.
+      ALL_PORTS_OCCUPIED = 3;
+    }
+    Reason reason = 2;
+  }
+  // The reason each port request was rejected. Empty if the status is not
+  // PORT_ALLOCATION_FAILED. There will be one rejection message for each
+  // requested port, and at least one will have a non-ACCEPTABLE reason.
+  repeated PortRejectionPB port_rejections = 5;
+
+  // Human-readable messages optionally used to describe status.
+  repeated string messages = 6;
+}
+
+// -----------------------------------------------------------------------------
+// StartGame
+
+// Next ID: 2
+message StartGameRequestPB {
+  // Key fields
+  int64 console_id = 1;
+  // End key fields
+};
+
+// Next ID: 4
+message StartGameResponsePB {
+  // Key fields
+  int64 console_id = 1;
+  // End key fields
+
+  // Enum describing the success or failure reasons.
+  enum Status {
+    UNKNOWN = 0;
+    SUCCESS = 1;
+    UNSPECIFIED_FAILURE = 2;
+  }
+  Status status = 2;
+
+  // Human-readable messages optionally used to describe status.
+  repeated string messages = 3;
+}
+
+// -----------------------------------------------------------------------------
+// SendEvent
+//
+// Send gameplay events.
+
+// Identifies the client to the server and indicates that it is ready to begin
+// transmitting and receiving events.
+// Next ID: 3
+message ClientReadyPB {
+  // Begin key fields
+  int64 console_id = 1;
+  int64 client_id = 2;
+  // End key fields
+}
+
+// Next ID: 3
+message StartGamePB {
+  // Key fields
+  // The console ID that should be started.
+  int64 console_id = 1;
+  // End key fields
+
+  // Describes the connected ports.
+  // Next ID: 3
+  message ConnectedPortPB {
+    // Port number of the connected port.
+    Port port = 1;
+    // Number of frames by which this port is delayed.
+    int32 delay_frames = 2;
+  }
+
+  // The ports that are connected to the console, including the one for the
+  // receiving client.
+  repeated ConnectedPortPB connected_ports = 2;
+}
+
+// Next ID: 22
+message KeyStatePB {
+  // Key fields
+  // The console ID and the port from which this request originates.
+  int64 console_id = 1;
+  Port port = 2;
+  int64 frame_number = 3;
+  // End key fields
+
+  // Button values. Proto value to numeric mupen64plus values are:
+  // bool true           -> 1
+  // bool false or unset -> 0
+  // uint32 unset        -> 0
+  bool right_d_pad    = 4;
+  bool left_d_pad     = 5;
+  bool down_d_pad     = 6;
+  bool up_d_pad       = 7;
+  bool start_button   = 8;
+  bool z_trigger      = 9;
+  bool b_button       = 10;
+  bool a_button       = 11;
+  bool right_c_button = 12;
+  bool left_c_button  = 13;
+  bool down_c_button  = 14;
+  bool up_c_button    = 15;
+  bool right_trigger  = 16;
+  bool left_trigger   = 17;
+  bool reserved_1     = 18;
+  bool reserved_2     = 19;
+
+  // Joystick axis values
+  int32 x_axis        = 20;
+  int32 y_axis        = 21;
+}
+
+// Next ID: 6
+message InvalidDataPB {
+  // Key fields
+  // The console ID and the port from which this request originates.
+  int64 console_id = 1;
+  Port port = 2;
+  int64 frame_number = 3;
+  // End key fields
+
+  // Status enum describing the reason the message was invalid
+  enum Status {
+    UNKNOWN = 0;
+    INVALID_CONSOLE = 1;
+    INVALID_PORT = 2;
+  }
+  Status status = 4;
+  // Human-readable strings representing the reason the message was invalid.
+  repeated string messages = 5;
+}
+
+// Next ID: 3
+message OutgoingEventPB {
+  ClientReadyPB client_ready = 1;
+  repeated KeyStatePB key_press = 2;
+}
+
+// Next ID: 4
+message IncomingEventPB {
+  StartGamePB start_game = 1;
+  repeated KeyStatePB key_press = 2;
+  repeated InvalidDataPB invalid_data = 3;
+}
+
+// -----------------------------------------------------------------------------
+// Miscellaneous methods
+
+// Asks the server to shut itself down.
+// Next ID: 1
+message ShutDownServerRequestPB {}
+
+// Next ID: 2
+message ShutDownServerResponsePB {
+  // Set to true if the server agrees to shut itself down immediately after this 
+  // response is sent.
+  bool server_will_die = 1;
+}
+
+// -----------------------------------------------------------------------------
+// Service definition
+
+service NetPlayServerService {
+  // Request a ping from the server.
+  rpc Ping (PingPB) returns (PingPB) {}
+
+  // Request a new console from the server.
+  rpc MakeConsole (MakeConsoleRequestPB)
+    returns (MakeConsoleResponsePB) {}
+
+  // Plug a controller into an initialized virtual console. Can request a
+  // specific port or request an arbitrary port. No more than 4 players may be
+  // connected to a console at a time.
+  rpc PlugController (PlugControllerRequestPB)
+    returns (PlugControllerResponsePB) {}
+
+  // Start the game. On successful receipt of this message, the server will
+  // instruct all clients to begin emulation and start sending events. Once this
+  // method has been called, no more controller may plug into the console.
+  rpc StartGame(StartGameRequestPB)
+    returns (StartGameResponsePB) {}
+
+  // A bidirectional stream where the client sends events and the server proxies
+  // them to all other clients.
+  //  - Outgoing events: Events that happen on the client's side.
+  //  - Incoming events: Events that happened on any other client and were
+  //    forwarded by the server.
+  rpc SendEvent (stream OutgoingEventPB) 
+    returns (stream IncomingEventPB) {}
+
+  // Request that the server shut itself down. Currently, the server will only 
+  // shut down if it is in running in test mode.
+  rpc ShutDownServer(ShutDownServerRequestPB)
+      returns(ShutDownServerResponsePB) {}
+}

@@ -1,0 +1,40 @@
+syntax = "proto3";
+
+// Contains timestamps at which various game events occurred in micros since the 
+// Unix epoch.
+message TimingEventPB {
+  oneof event {
+    // -------------------------------------------------------------------------
+    // Events populated by the client library.
+
+    // Controller allocations were requested.
+    int64 plug_controller_request = 1;
+    int64 plug_controller_response = 2;
+
+    // The client was declared to be ready via the synchronous API.
+    int64 client_ready_sync_write_start = 3;
+    int64 client_ready_sync_write_finish = 4;
+
+    // The server indicated that the console is starting.
+    int64 start_game_event_read_start = 5;
+    int64 start_game_event_read_finish = 6;
+
+    // Key state was transmitted via the synchronous API.
+    int64 key_state_sync_write_start = 7;
+    int64 key_state_sync_write_finish = 8;
+
+    // Key state was requested from the client for a remote port. Note these 
+    // events straddle a function call rather than a simple GRPC call. Note also 
+    // that these events do not necessarily even straddle a network read.
+    int64 remote_key_state_requested = 9;
+    int64 remote_key_state_returned = 10;
+
+    // The stream was read while expecting a key state update.
+    int64 key_state_read_start = 11;
+    int64 key_state_read_finish = 12;
+  }
+}
+
+message TimingsPB {
+  repeated TimingEventPB event = 1;
+}

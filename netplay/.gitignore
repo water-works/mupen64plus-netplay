@@ -1,0 +1,6 @@
+# Generated proto files
+*.pb.cc
+*.pb.h
+
+# Build directory
+build
