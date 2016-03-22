@@ -10,10 +10,6 @@
 	path = grpc
 	url = https://github.com/grpc/grpc
   ignore = dirty
-[submodule "protobuf"]
-	path = protobuf
-	url = https://github.com/google/protobuf
-  ignore = dirty
 [submodule "mupen64plus-ui-console"]
 	path = mupen64plus-ui-console
 	url = https://github.com/water-works/mupen64plus-ui-console
@@ -30,3 +26,6 @@
 	path = gflags
 	url = https://github.com/gflags/gflags
   ignore = dirty
+[submodule "protobuf"]
+	path = protobuf
+	url = https://github.com/google/protobuf
