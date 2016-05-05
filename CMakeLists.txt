@@ -8,6 +8,13 @@ include (ExternalProject)
 # Installation directory of all required projects.
 SET (INSTALL_PREFIX ${CMAKE_SOURCE_DIR}/usr)
 
+# Set this to true to skip building the Java server. If you're having trouble 
+# with Java dependencies and you don't care about building the server, then this
+# setting may be helpful.
+IF (NOT DEFINED NETPLAY_BUILD_WITH_JAVA)
+  SET (NETPLAY_BUILD_WITH_JAVA TRUE)
+ENDIF()
+
 # ------------------------------------------------------------------------------
 # Proto3
 
@@ -239,6 +246,7 @@ ExternalProject_Add (
     # remove this once that happens.
     -DCMAKE_CXX_FLAGS:string=-Wno-inconsistent-missing-override
     -DCMAKE_BUILD_TYPE:string=Debug
+    -DNETPLAY_BUILD_WITH_JAVA:string=${NETPLAY_BUILD_WITH_JAVA}
 
   # Build step
   BINARY_DIR ${NETPLAY_PREFIX}
