@@ -2,10 +2,6 @@
 #
 # Accepts the following variables as input:
 #  GRPC_ROOT
-#  GRPC_JAVA_ROOT
-#  GRPC_PROTOC_JAVA_PLUGIN - Location of the GRPC compiler plugin for Java
-#  USE_PACKAGED_GRPC_PROTOC_JAVA_PLUGIN - If set, try to use one of the binaries
-#                                         included in this repository
 #
 # Defines the following variables:
 #
@@ -14,10 +10,9 @@
 #  GRPC_LIBRARY - libgrpc
 #  GRPCPP_LIBRARY - libgrpc++
 #  GRPC_PROTOC_CPP_PLUGIN - GRPC protoc C++ compiler plugin
-#  GRPC_PROTOC_JAVA_PLUGIN - GRPC protoc Java compiler plugin
 
 # ------------------------------------------------------------------------------
-# Java target creation function
+# c++ target creation function
 
 FUNCTION (GRPC_GENERATE_CPP SRCS HDRS)
   IF (NOT ARGN)
@@ -120,26 +115,6 @@ FIND_PROGRAM(
 )
 MARK_AS_ADVANCED (GRPC_PROTOC_CPP_PLUGIN)
 
-IF (DEFINED GRPC_JAVA_ROOT)
-  # Do nothing
-ELSEIF (DEFINED ENV{GRPC_JAVA_ROOT})
-  GET_FILENAME_COMPONENT (GRPC_JAVA_ROOT $ENV{GRPC_JAVA_ROOT} ABSOLUTE)
-ELSE ()
-  SET (GRPC_JAVA_ROOT ${CMAKE_SOURCE_DIR}/grpc-java)
-ENDIF ()
-
-FIND_PROGRAM (
-  GRPC_PROTOC_JAVA_PLUGIN
-  protoc-gen-grpc-java
-  HINTS ${GRPC_JAVA_ROOT}/compiler/build/binaries/java_pluginExecutable)
-
-MESSAGE (STATUS "Using GRPC Java protoc plugin at ${GRPC_PROTOC_JAVA_PLUGIN}")
-
-MARK_AS_ADVANCED (GRPC_PROTOC_JAVA_PLUGIN)
-
-# Add a custom target for the GRPC Java protoc plugin. This is used for when 
-ADD_CUSTOM_TARGET (GrpcJavaProtocPlugin DEPENDS ${GRPC_PROTOC_JAVA_PLUGIN})
-
 # ------------------------------------------------------------------------------
 # Wrapup and variable setting
 
@@ -152,7 +127,6 @@ FIND_PACKAGE_HANDLE_STANDARD_ARGS(
   GRPCPP_LIBRARY
   GRPC_INCLUDE_DIR
   GRPC_PROTOC_CPP_PLUGIN
-  GRPC_PROTOC_JAVA_PLUGIN
 )
 
 if (GRPC_FOUND)
