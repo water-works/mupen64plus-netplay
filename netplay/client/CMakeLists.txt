@@ -24,8 +24,6 @@ SET (NETPLAY_TEST_LIBS
   ${GMOCK_BOTH_LIBRARIES}
   ${GTEST_MAIN_LIBRARIES})
 
-SET (GTEST_ARGS "--gtest_color=yes")
-
 ADD_EXECUTABLE (Client_test client_test.cc)
 TARGET_LINK_LIBRARIES (Client_test ${NETPLAY_TEST_LIBS})
 GTEST_ADD_TESTS (Client_test ${GTEST_ARGS} client_test.cc)

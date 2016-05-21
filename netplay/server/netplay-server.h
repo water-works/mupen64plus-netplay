@@ -21,7 +21,7 @@ namespace server {
 // This class is thread-safe.
 class NetplayServer : public NetPlayServerService::Service {
  public:
-  NetplayServer();
+  NetplayServer(bool debug_mode);
 
   // Returns an empty response.
   grpc::Status Ping(grpc::ServerContext* context, const PingPB* request,

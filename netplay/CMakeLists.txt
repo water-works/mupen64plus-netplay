@@ -41,6 +41,11 @@ INCLUDE_DIRECTORIES (${GRPC_INCLUDE_DIRS})
 FIND_LIBRARY (GFLAGS_LIBRARIES gflags)
 
 # ------------------------------------------------------------------------------
+# Common definitions
+
+SET (GTEST_ARGS "--gtest_color=yes")
+
+# ------------------------------------------------------------------------------
 # Declarations and subdirectories
 
 # The proto base directory happens to be the same as the project root, but will 
