@@ -101,6 +101,7 @@ class NetplayServer : public NetPlayServerService::Service {
 
   std::atomic_long console_id_generator_;
   std::atomic_long client_id_generator_;
+  std::atomic_long player_id_generator_;
 
   std::mutex console_lock_;
   // Begin guarded by console_lock_
