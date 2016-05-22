@@ -27,7 +27,7 @@ class Console {
     Client* GetClientById(long id);
 
  private:
-   Client MakeNewClient(const vector<Port>& ports, int delay);
+   const Client& MakeNewClient(const vector<Port>& ports, int delay);
    
    grpc::Status TryAddPlayersInternal(int delay, const vector<Port>& requested_ports);
  

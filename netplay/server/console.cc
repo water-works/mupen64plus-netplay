@@ -50,8 +50,8 @@ grpc::Status Console::TryAddPlayers(int delay,
   vector<Port> assigned_ports;
   bool can_assign = true;
   
-  vector<Port> sorted_requests = std::sort(requested_ports.begin(), requested_ports.end(), PortCompare);
-  for (const Port& request_port : sorted_requests) {
+  std::sort(requested_ports.begin(), requested_ports.end(), PortCompare);
+  for (const Port& request_port : requested_ports) {
     if (request_port == Port::UNKNOWN) {
       continue;
     }
@@ -63,7 +63,8 @@ grpc::Status Console::TryAddPlayers(int delay,
         can_assign = false;
         reject_reason.set_reason(Reason::ALL_PORTS_OCCUPIED);
       }
-      Port next_available_port = available_ports.pop_front();
+      Port next_available_port = available_ports.front();
+      available_ports.pop_front();
       reject_reason.set_port(next_available_port);
       assigned_ports.push_back(next_available_port);
     }
@@ -75,7 +76,7 @@ grpc::Status Console::TryAddPlayers(int delay,
       } else {
         assigned_ports.push_back(request_port);
         for (auto i = available_ports.begin(); i != available_ports.end(); i++) {
-          if (available_ports[i] = request_port) {
+          if (available_ports[i] == request_port) {
             available_ports.erase(i);
           }
         }
