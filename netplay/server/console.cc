@@ -16,6 +16,12 @@ bool PortCompare(const Port& a, const Port& b) {
 
 Console::Console(long console_id) : console_id_(console_id) {}
 
+Client* Console::GetClientById(long id) {
+  for (auto& client_pair : client_port_map_) {
+    if client_pair-> 
+  }
+}
+
 grpc::Status Console::TryAddPlayers(int delay, 
     vector<Port> requested_ports, vector<PortRejectionPB>* rejections, 
     Client* client) {

@@ -18,8 +18,8 @@ enum ConsoleStatus {UNKNOWN, CREATED, POWERED, DONE};
 class Console {
  public:
    Console(long console_id);
-  
    grpc::Status TryAddPlayers(int delay, const vector<Port>& requested_ports);
+   Client* GetClientById(long id);
 
  private:
    Client MakeNewClient();
