@@ -20,14 +20,14 @@ class Console {
  public:
    Console(long console_id);
    
-   grpc::Status Console::TryAddPlayers(int delay, vector<Port> requested_ports,
+   grpc::Status TryAddPlayers(int delay, vector<Port> requested_ports,
     vector<PortRejectionPB>* rejections,
     Client* client);
     
     Client* GetClientById(long id);
 
  private:
-   Client MakeNewClient();
+   Client MakeNewClient(const vector<Port>& ports, int delay);
    
    grpc::Status TryAddPlayersInternal(int delay, const vector<Port>& requested_ports);
  

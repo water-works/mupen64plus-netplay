@@ -1,9 +1,12 @@
 #include "server/console.h"
 
+#include <deque>
+#include <sort>
+
 namespace server {
 
 typedef PlugControllerResponsePB_PortRejectionPB PortRejectionPB;
-
+typedef PlugControllerResponsePB_PortRejectionPB_Reason Reason;
 namespace {
 
 // We want to sort ports in ascending order, with
@@ -49,7 +52,7 @@ grpc::Status Console::TryAddPlayers(int delay,
   
   vector<Port> sorted_requests = std::sort(requested_ports.begin(), requested_ports.end(), PortCompare);
   for (const Port& request_port : sorted_requests) {
-    if (request_port == Port.UNKNOWN || request_port == Port::UNRECOGNIZED) {
+    if (request_port == Port::UNKNOWN) {
       continue;
     }
     PortRejectionPB reject_reason;
@@ -80,7 +83,7 @@ grpc::Status Console::TryAddPlayers(int delay,
     }
     rejections->push_back(reject_reason);
   }
-  if (!canAssign) {
+  if (!can_assign) {
     return grpc::Status(grpc::StatusCode::FAILED_PRECONDITION, "Cannot assign ports.");
   }
   MakeNewClient(assigned_ports, delay);
