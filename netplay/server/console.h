@@ -8,7 +8,7 @@ using std::vector;
 
 namespace server {
 
-const std::<vector> ALL_PORTS 
+const std::vector<Port> ALL_PORTS 
     = {Port.PORT_1, Port.PORT_2, Port.PORT_3, Port.PORT_4}
 
 class Client;
