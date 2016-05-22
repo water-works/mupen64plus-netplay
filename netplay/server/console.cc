@@ -1,7 +1,7 @@
 #include "server/console.h"
 
 #include <deque>
-#include <sort>
+#include <algorithm>
 
 namespace server {
 
