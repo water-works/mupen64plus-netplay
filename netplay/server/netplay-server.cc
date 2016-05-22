@@ -20,6 +20,9 @@ grpc::Status NetplayServer::MakeConsole(grpc::ServerContext* context,
                       std::unique_ptr<Console>(new Console(console_id)));
   }
 
+  response->set_status(MakeConsoleResponsePB::SUCCESS);
+  response->set_console_id(console_id);
+
   return grpc::Status::OK;
 }
 

@@ -1,14 +1,15 @@
 #ifndef SERVER_NETPLAY_SERVER_H_
 #define SERVER_NETPLAY_SERVER_H_
 
-#include "base/netplayServiceProto.pb.h"
-#include "base/netplayServiceProto.grpc.pb.h"
-#include "server/console.h"
-
 #include <atomic>
 #include <map>
 #include <memory>
 #include <mutex>
+
+#include "base/netplayServiceProto.pb.h"
+#include "base/netplayServiceProto.grpc.pb.h"
+#include "gtest/gtest.h"
+#include "server/console.h"
 
 namespace server {
 
@@ -106,6 +107,8 @@ class NetplayServer : public NetPlayServerService::Service {
   // Begin guarded by console_lock_
   std::map<long, std::unique_ptr<Console>> consoles_;
   // End guarded by console_lock_
+
+  FRIEND_TEST(NetplayServerTest, MakeConsoleSuccess);
 };
 
 }  // namespace server
