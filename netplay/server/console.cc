@@ -6,7 +6,7 @@ namespace {
 // We want to sort ports in ascending order, with
 // PORT_ANY last in the list.
 bool PortCompare(const Port& a, const Port& b) {
-  if (a == Port.PORT_ANY) {
+  if (a == Port::PORT_ANY) {
     return false;
   }
   return a < b;
@@ -16,10 +16,11 @@ bool PortCompare(const Port& a, const Port& b) {
 
 Console::Console(long console_id) : console_id_(console_id) {}
 
+// TODO: complete this function.
 Client* Console::GetClientById(long id) {
-  for (auto& client_pair : client_port_map_) {
-    if client_pair-> 
+  for (auto& client_pair : client_port_map_) {    
   }
+  return nullptr;
 }
 
 grpc::Status Console::TryAddPlayers(int delay, 
@@ -45,16 +46,16 @@ grpc::Status Console::TryAddPlayers(int delay,
   
   vector<Port> sorted_requests = std::sort(requested_ports.begin(), requested_ports.end(), PortCompare);
   for (const Port& request_port : sorted_requests) {
-    if (request_port == Port.UNKNOWN || request_port == Port.UNRECOGNIZED) {
+    if (request_port == Port.UNKNOWN || request_port == Port::UNRECOGNIZED) {
       continue;
     }
     PortRejectionPB reject_reason;
     reject_reason.set_port(request_port);
-    reject_reason.set_reason(Reason.ACCEPTABLE);      
-    if (request_port == Port.PORT_ANY) {
+    reject_reason.set_reason(Reason::ACCEPTABLE);      
+    if (request_port == Port::PORT_ANY) {
       if (available_ports.size() < 1) {
         can_assign = false;
-        reject_reason.set_reason(Reason.ALL_PORTS_OCCUPIED);
+        reject_reason.set_reason(Reason::ALL_PORTS_OCCUPIED);
       }
       Port next_available_port = available_ports.pop_front();
       reject_reason.set_port(next_available_port);
@@ -64,7 +65,7 @@ grpc::Status Console::TryAddPlayers(int delay,
       if (client_port_map_.count(request_port) == 1) {
         can_assign = false;
         reject_reason.set_port(request_port);
-        reject_reason.set_reason(Reason.PORT_ALREADY_OCCUPIED);        
+        reject_reason.set_reason(Reason::PORT_ALREADY_OCCUPIED);        
       } else {
         assigned_ports.push_back(request_port);
         for (auto i = available_ports.begin(); i != available_ports.end(); i++) {
