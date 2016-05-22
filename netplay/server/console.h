@@ -8,7 +8,7 @@ using std::vector;
 
 namespace server {
 
-using PlugControllerResponsePB::PortRejectionPB;
+typedef PlugControllerResponsePB_PortRejectionPB PortRejectionPB;
 
 const std::vector<Port> ALL_PORTS 
     = {Port::PORT_1, Port::PORT_2, Port::PORT_3, Port::PORT_4};

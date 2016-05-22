@@ -2,7 +2,7 @@
 
 namespace server {
 
-using PlugControllerResponsePB::PortRejectionPB;
+typedef PlugControllerResponsePB_PortRejectionPB PortRejectionPB;
 
 namespace {
 
