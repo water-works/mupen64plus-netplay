@@ -1,6 +1,9 @@
 #include "server/console.h"
 
 namespace server {
+
+using PlugControllerResponsePB::PortRejectionPB;
+
 namespace {
 
 // We want to sort ports in ascending order, with

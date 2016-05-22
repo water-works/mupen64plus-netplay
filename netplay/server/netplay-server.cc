@@ -1,6 +1,9 @@
 #include "server/netplay-server.h"
 
 namespace server {
+
+using PlugControllerResponsePB::PortRejectionPB;
+
 namespace {
 
 grpc::Status AddRejections(const vector<PortRejectionPB>& rejects, PlugControllerResponsePB* response) {
