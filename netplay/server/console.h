@@ -8,6 +8,8 @@ using std::vector;
 
 namespace server {
 
+using PlugControllerResponsePB::PortRejectionPB;
+
 const std::vector<Port> ALL_PORTS 
     = {Port::PORT_1, Port::PORT_2, Port::PORT_3, Port::PORT_4};
 class Client;
@@ -17,8 +19,12 @@ enum ConsoleStatus {UNKNOWN, CREATED, POWERED, DONE};
 class Console {
  public:
    Console(long console_id);
-   grpc::Status TryAddPlayers(int delay, const vector<Port>& requested_ports);
-   Client* GetClientById(long id);
+   
+   grpc::Status Console::TryAddPlayers(int delay, vector<Port> requested_ports,
+    vector<PortRejectionPB>* rejections,
+    Client* client);
+    
+    Client* GetClientById(long id);
 
  private:
    Client MakeNewClient();
