@@ -5,7 +5,7 @@
 namespace server {
 
 class NetplayServerTest : public ::testing::Test {
- public:
+ protected:
   NetplayServerTest() : server_(true) {}
 
   NetplayServer server_;
@@ -29,7 +29,42 @@ TEST_F(NetplayServerTest, MakeConsoleSuccess) {
   ASSERT_TRUE(server_.MakeConsole(&dummy_context_, &request, &response).ok());
 
   EXPECT_EQ(MakeConsoleResponsePB::SUCCESS, response.status());
-  EXPECT_EQ(101,  response.console_id());
+  EXPECT_EQ(101, response.console_id());
+}
+
+TEST_F(NetplayServerTest, PlugControllerSuccess) {
+  // Create a console.
+  MakeConsoleRequestPB make_console_request;
+  make_console_request.set_console_title("console title");
+  make_console_request.set_rom_name("rom name");
+  make_console_request.set_rom_file_md5("rom md5");
+  MakeConsoleResponsePB make_console_response;
+  ASSERT_TRUE(server_.MakeConsole(&dummy_context_, &make_console_request,
+                                  &make_console_response)
+                  .ok());
+
+  // Request a port allocation.
+  PlugControllerRequestPB request;
+  request.set_console_id(make_console_response.console_id());
+  request.set_delay_frames(4);
+  request.set_requested_port_1(Port::PORT_ANY);
+  PlugControllerResponsePB response;
+  ASSERT_TRUE(
+      server_.PlugController(&dummy_context_, &request, &response).ok());
+}
+
+TEST_F(NetplayServerTest, PlugControllerNoSuchConsole) {
+  // Request a port allocation.
+  PlugControllerRequestPB request;
+  request.set_console_id(999);
+  request.set_delay_frames(4);
+  request.set_requested_port_1(Port::PORT_ANY);
+  PlugControllerResponsePB response;
+  ASSERT_TRUE(
+      server_.PlugController(&dummy_context_, &request, &response).ok());
+  EXPECT_EQ(PlugControllerResponsePB::Status_Name(
+                PlugControllerResponsePB::NO_SUCH_CONSOLE),
+            PlugControllerResponsePB::Status_Name(response.status()));
 }
 
 }  // namespace server

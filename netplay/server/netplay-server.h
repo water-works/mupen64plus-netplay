@@ -73,7 +73,7 @@ class NetplayServer : public NetPlayServerService::Service {
   // across all streams.
   //
   // Note we cannot immediately tie the stream to the appropriate console ID. In 
-  // other words, we cannot determine which console this stream belongs to 
+  // other words, we cannot determine which console this stream beint64_ts to 
   // simply by looking at the stream object itself. Instead, we expect the 
   // stream to identify itself with a ClientReady event. All events received 
   // before this event will be responded to with an InvalidData event. Once this 
@@ -101,11 +101,13 @@ class NetplayServer : public NetPlayServerService::Service {
   const bool debug_mode_;
 
   std::atomic_long console_id_generator_;
-  std::atomic_long client_id_generator_;
+
+  static_assert(sizeof(std::atomic_long) == sizeof(int64_t),
+                "std::atomic_long must be exactly 64 bits wide");
 
   std::mutex console_lock_;
   // Begin guarded by console_lock_
-  std::map<long, std::unique_ptr<Console>> consoles_;
+  std::map<int64_t, std::unique_ptr<Console>> consoles_;
   // End guarded by console_lock_
 
   FRIEND_TEST(NetplayServerTest, MakeConsoleSuccess);

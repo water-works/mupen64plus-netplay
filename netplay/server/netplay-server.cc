@@ -16,8 +16,8 @@ grpc::Status NetplayServer::MakeConsole(grpc::ServerContext* context,
 
   {
     std::lock_guard<std::mutex> console_guard(console_lock_);
-    consoles_.emplace(console_id,
-                      std::unique_ptr<Console>(new Console(console_id)));
+    consoles_.emplace(console_id, std::unique_ptr<Console>(new Console(
+                                      console_id, request->rom_file_md5())));
   }
 
   response->set_status(MakeConsoleResponsePB::SUCCESS);
@@ -29,6 +29,19 @@ grpc::Status NetplayServer::MakeConsole(grpc::ServerContext* context,
 grpc::Status NetplayServer::PlugController(
     grpc::ServerContext* context, const PlugControllerRequestPB* request,
     PlugControllerResponsePB* response) {
+  std::lock_guard<std::mutex> guard(console_lock_);
+
+  const auto console_it = consoles_.find(request->console_id());
+  if (console_it == consoles_.end()) {
+    response->set_console_id(request->console_id());
+    response->set_status(PlugControllerResponsePB::NO_SUCH_CONSOLE);
+    return grpc::Status::OK;
+  }
+
+  std::unique_ptr<Console>& console = console_it->second;
+
+  console->RequestPortMapping(*request, response);
+
   return grpc::Status::OK;
 }
 

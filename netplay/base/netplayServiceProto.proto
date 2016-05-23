@@ -83,12 +83,12 @@ message PlugControllerRequestPB {
 // Next ID: 7
 message PlugControllerResponsePB {
   // Key fields
-  // Unique console ID. Will match console ID sent in the response.
+  // Unique console ID. Will match console ID sent in the request.
   int64 console_id = 1;
   // End key fields
 
   // Enum describing the success or failure reasons.
-  // Next ID: 6
+  // Next ID: 7
   enum Status {
     UNKNOWN = 0;
     SUCCESS = 1;
@@ -102,6 +102,8 @@ message PlugControllerResponsePB {
     // satisfied. See rejection_reasons below for details on why the request was
     // rejected.
     PORT_REQUEST_REJECTED = 5;
+    // The requested console ID doesn't correspond to any existing console.
+    NO_SUCH_CONSOLE = 6;
   }
   Status status = 2;
 
@@ -115,19 +117,15 @@ message PlugControllerResponsePB {
   // Next ID: 3
   message PortRejectionPB {
     // Key fields
+    // The requested port
     Port port = 1;
     // End key fields
 
     // Next ID: 4
     enum Reason {
       UNKNOWN = 0;
-      // Indicates this port was not the reason the request was rejected.
-      ACCEPTABLE = 1;
       // Indicates that a specifically requested port was already occupied.
-      PORT_ALREADY_OCCUPIED = 2;
-      // Returned in response to a PORT_ANY request when all ports are already
-      // satisfied.
-      ALL_PORTS_OCCUPIED = 3;
+      PORT_ALREADY_OCCUPIED = 1;
     }
     Reason reason = 2;
   }

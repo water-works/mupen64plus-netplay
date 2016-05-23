@@ -18,3 +18,7 @@ SET (NETPLAY_SERVER_TEST_LIBS
 ADD_EXECUTABLE (NetplayServer_test netplay-server_test.cc)
 TARGET_LINK_LIBRARIES (NetplayServer_test ${NETPLAY_SERVER_TEST_LIBS})
 GTEST_ADD_TESTS (NetplayServer_test ${GTEST_ARGS} netplay-server_test.cc)
+
+ADD_EXECUTABLE (Console_test console_test.cc)
+TARGET_LINK_LIBRARIES (Console_test ${NETPLAY_SERVER_TEST_LIBS})
+GTEST_ADD_TESTS (Console_test ${GTEST_ARGS} console_test.cc)
