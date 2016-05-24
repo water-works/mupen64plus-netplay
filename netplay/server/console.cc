@@ -1,6 +1,7 @@
 #include "server/console.h"
 
 #include <array>
+#include <map>
 
 namespace server {
 
@@ -14,7 +15,10 @@ Console::Client::Client(int64_t client_id_tmp, int64_t delay_frames_tmp)
       delay_frames(delay_frames_tmp),
       stream(nullptr) {}
 
-// Helper methods for RequestPortMapping.
+// -----------------------------------------------------------------------------
+// RequestPortMapping
+
+// Helper methods.
 namespace {
 
 // Defines the following sort order:
@@ -120,7 +124,7 @@ void Console::RequestPortMapping(const PlugControllerRequestPB& request,
       }
     }
 
-    // If any port request was rejected, return early. Note we decrement the 
+    // If any port request was rejected, return early. Note we decrement the
     // client ID generator.
     if (!response->port_rejections().empty()) {
       response->set_status(PlugControllerResponsePB::PORT_REQUEST_REJECTED);
@@ -141,6 +145,90 @@ void Console::RequestPortMapping(const PlugControllerRequestPB& request,
 
   response->set_status(PlugControllerResponsePB::SUCCESS);
   response->set_client_id(client_id);
+}
+
+// -----------------------------------------------------------------------------
+// RegisterStream and HandleEvent
+
+// Assumes the caller holds client_lock_
+void Console::GetClientsForClientId(int64_t client_id,
+                                    std::vector<Client*>* clients) {
+  for (auto& it : clients_) {
+    if (it.second.client_id == client_id) {
+      clients->push_back(&it.second);
+    }
+  }
+}
+
+bool Console::RegisterStream(int64_t client_id,
+                             grpc::WriterInterface<IncomingEventPB>* stream) {
+  bool found_client = false;
+
+  {
+    std::lock_guard<std::mutex> client_guard(client_lock_);
+
+    for (auto& it : clients_) {
+      if (it.second.client_id == client_id) {
+        it.second.stream = stream;
+        found_client = true;
+      }
+    }
+  }
+
+  return found_client;;
+}
+
+// Assumes the caller holds client_lock_
+void Console::PopulateKeyPressesForClient(const OutgoingEventPB& received,
+                                          IncomingEventPB* forwarded,
+                                          int64_t client_id) {
+  for (const auto& key_press : received.key_press()) {
+    const auto it = clients_.find(key_press.port());
+    if (it != clients_.end() && it->second.client_id != client_id) {
+      (*forwarded->add_key_press()) = key_press;
+    }
+  }
+}
+
+// Handles the given event proto.
+bool Console::HandleEvent(const OutgoingEventPB& event) {
+  for (const auto& key_press : event.key_press()) {
+    if (key_press.console_id() != console_id_) {
+      return false;
+    }
+  }
+
+  if (!event.key_press().empty()) {
+    std::map<grpc::WriterInterface<IncomingEventPB>*, IncomingEventPB>
+        deferred_writes;
+
+    std::lock_guard<std::mutex> client_guard(client_lock_);
+
+    // Keep track of the streams we've already written to so that we don't write 
+    // multiple messages to the same client.
+    std::set<const grpc::WriterInterface<IncomingEventPB>*> written_streams;
+    for (const auto& it : clients_) {
+      const Client& client = it.second;
+      const auto& write = deferred_writes.find(client.stream);
+      if (write != deferred_writes.end()) {
+        continue;
+      }
+
+      IncomingEventPB forwarded_event;
+      PopulateKeyPressesForClient(event, &deferred_writes[client.stream],
+                                  client.client_id);
+    }
+
+    // TODO: Expose and export this deferred write map to an asynchronous writer
+    // instead of performing network writes while holding a lock.
+    for (const auto& it : deferred_writes) {
+      if (!it.second.key_press().empty()) {
+        it.first->Write(it.second);
+      }
+    }
+  }
+
+  return true;
 }
 
 }  // namespace server

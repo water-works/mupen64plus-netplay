@@ -7,6 +7,7 @@
 
 #include "base/netplayServiceProto.pb.h"
 #include "base/netplayServiceProto.grpc.pb.h"
+#include "gtest/gtest.h"
 
 namespace server {
 
@@ -19,6 +20,14 @@ class Console {
   // failure reason and rejection reasons.
   void RequestPortMapping(const PlugControllerRequestPB& request,
                           PlugControllerResponsePB* response);
+
+  // Registers the output stream with the specified client ID. Returns false if 
+  // the client could not be registered.
+  bool RegisterStream(int64_t client_id,
+                      grpc::WriterInterface<IncomingEventPB>* stream);
+
+  // Handles the given event proto.
+  bool HandleEvent(const OutgoingEventPB& event);
 
  private:
   struct Client;
@@ -33,14 +42,26 @@ class Console {
 
     const int64_t client_id;
     const int32_t delay_frames;
+
     // Borrowed pointer.
-    grpc::ServerReaderWriter<IncomingEventPB, OutgoingEventPB>* stream;
+    grpc::WriterInterface<IncomingEventPB>* stream;
   };
 
   // Helper method for RequestPortMapping. Returns an unallocated port number in 
   // the given mapping, or UNKNOWN if no satisfactory port can be found.
   Port GetUnmappedPort(const PortToClientMap& clients,
                        const std::set<Port>& allocated_ports, Port port);
+
+  // Helper method that fetches pointers to the clients with the given client 
+  // ID. Makes the following assumptions, but does not validate any of them:
+  //  - clients is empty
+  //  - the caller holds client_lock
+  void GetClientsForClientId(int64_t client_id, std::vector<Client*>* clients);
+
+  // Copy the keypresses that are unrelated to the given client into the 
+  // forwarded event proto. This method assumes the caller holds client_lock.
+  void PopulateKeyPressesForClient(const OutgoingEventPB& received,
+      IncomingEventPB* forwarded, int64_t client_id);
 
   const int64_t console_id_;
   const std::string rom_file_md5_;
@@ -50,6 +71,8 @@ class Console {
   int64_t client_id_generator_;
   PortToClientMap clients_;
   // End guarded by client_lock_
+
+  FRIEND_TEST(ConsoleTest, RegisterStreamSuccess);
 };
 
 }  // namespace server
