@@ -157,8 +157,10 @@ message StartGameResponsePB {
   // Enum describing the success or failure reasons.
   enum Status {
     UNKNOWN = 0;
-    SUCCESS = 1;
-    UNSPECIFIED_FAILURE = 2;
+    UNSPECIFIED_FAILURE = 1;
+    SUCCESS = 2;
+    NO_SUCH_CONSOLE = 3;
+    NOT_ALL_CLIENTS_READY = 4;
   }
   Status status = 2;
 

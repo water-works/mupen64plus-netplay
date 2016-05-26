@@ -57,6 +57,21 @@ template <typename StaticConsoleFactory>
 grpc::Status NetplayServerImpl<StaticConsoleFactory>::StartGame(
     grpc::ServerContext* context, const StartGameRequestPB* request,
     StartGameResponsePB* response) {
+  response->set_console_id(request->console_id());
+
+  {
+    std::lock_guard<std::mutex> guard(console_lock_);
+    const auto& it = consoles_.find(request->console_id());
+    if (it == consoles_.end()) {
+      response->set_status(StartGameResponsePB::NO_SUCH_CONSOLE);
+      return grpc::Status::OK;
+    }
+    if (!it->second->ClientsPresentAndReady()) {
+      response->set_status(StartGameResponsePB::NOT_ALL_CLIENTS_READY);
+      return grpc::Status::OK;
+    }
+  }
+
   return grpc::Status::OK;
 }
 

@@ -12,10 +12,16 @@ class NetplayServerTest : public ::testing::Test {
   grpc::ServerContext dummy_context_;
 };
 
+// -----------------------------------------------------------------------------
+// Ping
+
 TEST_F(NetplayServerTest, PingReturnsOK) {
   PingPB request, response;
   EXPECT_TRUE(server_.Ping(&dummy_context_, &request, &response).ok());
 }
+
+// -----------------------------------------------------------------------------
+// MakeConsole
 
 TEST_F(NetplayServerTest, MakeConsoleSuccess) {
   // Set the generator to a specific value.
@@ -31,6 +37,9 @@ TEST_F(NetplayServerTest, MakeConsoleSuccess) {
   EXPECT_EQ(MakeConsoleResponsePB::SUCCESS, response.status());
   EXPECT_EQ(101, response.console_id());
 }
+
+// -----------------------------------------------------------------------------
+// PlugController
 
 TEST_F(NetplayServerTest, PlugControllerSuccess) {
   // Create a console.
@@ -65,6 +74,13 @@ TEST_F(NetplayServerTest, PlugControllerNoSuchConsole) {
   EXPECT_EQ(PlugControllerResponsePB::Status_Name(
                 PlugControllerResponsePB::NO_SUCH_CONSOLE),
             PlugControllerResponsePB::Status_Name(response.status()));
+}
+
+// -----------------------------------------------------------------------------
+// StartGame
+
+TEST_F(NetplayServerTest, StartGameNotAllClientsHaveStreamsRegistered) {
+
 }
 
 }  // namespace server
