@@ -20,9 +20,10 @@ namespace server {
 //  - Accepting incoming streams.
 //
 // This class is thread-safe.
-class NetplayServer : public NetPlayServerService::Service {
+template <class StaticConsoleFactory>
+class NetplayServerImpl : public NetPlayServerService::Service {
  public:
-  NetplayServer(bool debug_mode);
+  NetplayServerImpl(bool debug_mode);
 
   // Returns an empty response.
   grpc::Status Ping(grpc::ServerContext* context, const PingPB* request,
@@ -98,6 +99,8 @@ class NetplayServer : public NetPlayServerService::Service {
                               ShutDownServerResponsePB* response) override;
 
  private:
+  typedef typename StaticConsoleFactory::Console ConsoleType;
+
   const bool debug_mode_;
 
   std::atomic_long console_id_generator_;
@@ -107,11 +110,25 @@ class NetplayServer : public NetPlayServerService::Service {
 
   std::mutex console_lock_;
   // Begin guarded by console_lock_
-  std::map<int64_t, std::unique_ptr<Console>> consoles_;
+  std::map<int64_t, std::unique_ptr<ConsoleType>> consoles_;
   // End guarded by console_lock_
 
   FRIEND_TEST(NetplayServerTest, MakeConsoleSuccess);
 };
+
+// Factory to create a real console.
+class ConsoleFactory {
+ public:
+  typedef Console Console;
+  static inline Console* MakeConsole(int64_t console_id,
+                                     const std::string& rom_file_md5) {
+    return new Console(console_id, rom_file_md5);
+  }
+};
+
+// Client code should never use the templated definition and should instead use
+// this explicit instantiation.
+typedef NetplayServerImpl<ConsoleFactory> NetplayServer;
 
 }  // namespace server
 

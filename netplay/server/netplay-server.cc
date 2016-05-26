@@ -1,23 +1,30 @@
 #include "server/netplay-server.h"
+#include "test-mocks.h"
 
 namespace server {
 
-NetplayServer::NetplayServer(bool debug_mode) : debug_mode_(debug_mode) {}
+template <typename StaticConsoleFactory>
+NetplayServerImpl<StaticConsoleFactory>::NetplayServerImpl(bool debug_mode)
+    : debug_mode_(debug_mode) {}
 
-grpc::Status NetplayServer::Ping(grpc::ServerContext* context,
-                                 const PingPB* request, PingPB* response) {
+template <typename StaticConsoleFactory>
+grpc::Status NetplayServerImpl<StaticConsoleFactory>::Ping(
+    grpc::ServerContext* context, const PingPB* request, PingPB* response) {
   return grpc::Status::OK;
 }
 
-grpc::Status NetplayServer::MakeConsole(grpc::ServerContext* context,
-                                        const MakeConsoleRequestPB* request,
-                                        MakeConsoleResponsePB* response) {
+template <typename StaticConsoleFactory>
+grpc::Status NetplayServerImpl<StaticConsoleFactory>::MakeConsole(
+    grpc::ServerContext* context, const MakeConsoleRequestPB* request,
+    MakeConsoleResponsePB* response) {
   const long console_id = ++console_id_generator_;
 
   {
     std::lock_guard<std::mutex> console_guard(console_lock_);
-    consoles_.emplace(console_id, std::unique_ptr<Console>(new Console(
-                                      console_id, request->rom_file_md5())));
+    consoles_.emplace(
+        console_id,
+        std::unique_ptr<ConsoleType>(StaticConsoleFactory::MakeConsole(
+            console_id, request->rom_file_md5())));
   }
 
   response->set_status(MakeConsoleResponsePB::SUCCESS);
@@ -26,7 +33,8 @@ grpc::Status NetplayServer::MakeConsole(grpc::ServerContext* context,
   return grpc::Status::OK;
 }
 
-grpc::Status NetplayServer::PlugController(
+template <typename StaticConsoleFactory>
+grpc::Status NetplayServerImpl<StaticConsoleFactory>::PlugController(
     grpc::ServerContext* context, const PlugControllerRequestPB* request,
     PlugControllerResponsePB* response) {
   std::lock_guard<std::mutex> guard(console_lock_);
@@ -38,29 +46,35 @@ grpc::Status NetplayServer::PlugController(
     return grpc::Status::OK;
   }
 
-  std::unique_ptr<Console>& console = console_it->second;
+  std::unique_ptr<ConsoleType>& console = console_it->second;
 
   console->RequestPortMapping(*request, response);
 
   return grpc::Status::OK;
 }
 
-grpc::Status NetplayServer::StartGame(grpc::ServerContext* context,
-                                      const StartGameRequestPB* request,
-                                      StartGameResponsePB* response) {
+template <typename StaticConsoleFactory>
+grpc::Status NetplayServerImpl<StaticConsoleFactory>::StartGame(
+    grpc::ServerContext* context, const StartGameRequestPB* request,
+    StartGameResponsePB* response) {
   return grpc::Status::OK;
 }
 
-grpc::Status NetplayServer::SendEvent(
+template <typename StaticConsoleFactory>
+grpc::Status NetplayServerImpl<StaticConsoleFactory>::SendEvent(
     grpc::ServerContext* context,
     grpc::ServerReaderWriter<IncomingEventPB, OutgoingEventPB>* stream) {
   return grpc::Status::OK;
 }
 
-grpc::Status NetplayServer::ShutDownServer(
+template <typename StaticConsoleFactory>
+grpc::Status NetplayServerImpl<StaticConsoleFactory>::ShutDownServer(
     grpc::ServerContext* context, const ShutDownServerRequestPB* request,
     ShutDownServerResponsePB* response) {
   return grpc::Status::OK;
 }
+
+template class NetplayServerImpl<ConsoleFactory>;
+template class NetplayServerImpl<MockConsoleFactory>;
 
 }  // namespace server
