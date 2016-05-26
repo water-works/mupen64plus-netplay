@@ -17,6 +17,7 @@ class MockConsole {
   MOCK_METHOD2(RegisterStream,
                bool(int64_t, grpc::WriterInterface<IncomingEventPB>* stream));
   MOCK_METHOD1(HandleEvent, bool(const OutgoingEventPB&));
+  MOCK_METHOD0(ClientsPresentAndReady, bool());
 };
 
 class MockConsoleFactory {

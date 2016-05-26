@@ -26,6 +26,12 @@ class Console {
   bool RegisterStream(int64_t client_id,
                       grpc::WriterInterface<IncomingEventPB>* stream);
 
+  // Returns true if all clients in the client map have streams registered. 
+  // Returns false if:
+  //  - There are no clients.
+  //  - Not all clients have their stream field set.
+  bool ClientsPresentAndReady();
+
   // Handles the given event proto.
   bool HandleEvent(const OutgoingEventPB& event);
 
@@ -51,12 +57,6 @@ class Console {
   // the given mapping, or UNKNOWN if no satisfactory port can be found.
   Port GetUnmappedPort(const PortToClientMap& clients,
                        const std::set<Port>& allocated_ports, Port port);
-
-  // Helper method that fetches pointers to the clients with the given client 
-  // ID. Makes the following assumptions, but does not validate any of them:
-  //  - clients is empty
-  //  - the caller holds client_lock
-  void GetClientsForClientId(int64_t client_id, std::vector<Client*>* clients);
 
   // Copy the keypresses that are unrelated to the given client into the 
   // forwarded event proto. This method assumes the caller holds client_lock.

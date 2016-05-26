@@ -148,17 +148,7 @@ void Console::RequestPortMapping(const PlugControllerRequestPB& request,
 }
 
 // -----------------------------------------------------------------------------
-// RegisterStream and HandleEvent
-
-// Assumes the caller holds client_lock_
-void Console::GetClientsForClientId(int64_t client_id,
-                                    std::vector<Client*>* clients) {
-  for (auto& it : clients_) {
-    if (it.second.client_id == client_id) {
-      clients->push_back(&it.second);
-    }
-  }
-}
+// RegisterStream
 
 bool Console::RegisterStream(int64_t client_id,
                              grpc::WriterInterface<IncomingEventPB>* stream) {
@@ -177,6 +167,26 @@ bool Console::RegisterStream(int64_t client_id,
 
   return found_client;;
 }
+
+// -----------------------------------------------------------------------------
+// AllClientsHaveStreamsRegistered
+
+bool Console::ClientsPresentAndReady() {
+  std::lock_guard<std::mutex> guard(client_lock_);
+  if (clients_.empty()) {
+    return false;
+  }
+
+  for (const auto it : clients_) {
+    if (it.second.stream == nullptr) {
+      return false;
+    }
+  }
+  return true;
+}
+
+// -----------------------------------------------------------------------------
+// HandleEvent
 
 // Assumes the caller holds client_lock_
 void Console::PopulateKeyPressesForClient(const OutgoingEventPB& received,

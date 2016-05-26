@@ -319,6 +319,31 @@ TEST_F(ConsoleTest, RegisterStreamBadClientId) {
 }
 
 // -----------------------------------------------------------------------------
+// ClientsPresentAndReady
+
+TEST_F(ConsoleTest, ClientsPresentAndReadySuccess) {
+  ASSERT_TRUE(PopulateConsoleAndRegisterStreams());
+  EXPECT_TRUE(console_.ClientsPresentAndReady());
+}
+
+TEST_F(ConsoleTest, ClientsPresentAndReadyOnlySomeClientsReady) {
+  ASSERT_TRUE(PopulateConsole());
+  ASSERT_TRUE(console_.RegisterStream(client_ids_[0], &stream_1_));
+  ASSERT_TRUE(console_.RegisterStream(client_ids_[1], &stream_2_));
+  ASSERT_TRUE(console_.RegisterStream(client_ids_[2], &stream_3_));
+  EXPECT_FALSE(console_.ClientsPresentAndReady());
+}
+
+TEST_F(ConsoleTest, ClientsPresentAndReadyNoClients) {
+  EXPECT_FALSE(console_.ClientsPresentAndReady());
+}
+
+TEST_F(ConsoleTest, ClientsPresentAndReadyNotReady) {
+  ASSERT_TRUE(PopulateConsole());
+  EXPECT_FALSE(console_.ClientsPresentAndReady());
+}
+
+// -----------------------------------------------------------------------------
 // HandleEvent
 
 MATCHER_P(ExactlyEqualsProto, incoming, "equals " + incoming.DebugString()) {
