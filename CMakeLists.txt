@@ -8,13 +8,6 @@ include (ExternalProject)
 # Installation directory of all required projects.
 SET (INSTALL_PREFIX ${CMAKE_SOURCE_DIR}/usr)
 
-# Set this to true to skip building the Java server. If you're having trouble 
-# with Java dependencies and you don't care about building the server, then this
-# setting may be helpful.
-IF (NOT DEFINED NETPLAY_BUILD_WITH_JAVA)
-  SET (NETPLAY_BUILD_WITH_JAVA TRUE)
-ENDIF()
-
 # ------------------------------------------------------------------------------
 # Proto3
 
@@ -97,29 +90,6 @@ ExternalProject_Add (
   # Build step
   BINARY_DIR ${GMOCK_PREFIX}
   BUILD_COMMAND make
-
-  # Install step (skip)
-  INSTALL_COMMAND ""
-)
-
-# ------------------------------------------------------------------------------
-# GRPC-Java protoc plugin
-
-SET (GRPC_JAVA_PREFIX ${CMAKE_SOURCE_DIR}/grpc-java-build-wrapper)
-
-ExternalProject_Add(
-  GRPCJava
-  PREFIX ${GRPC_JAVA_PREFIX}
-  DEPENDS Protobuf3
-
-  # Configure step
-  SOURCE_DIR ${GRPC_JAVA_PREFIX}
-  CMAKE_CACHE_ARGS
-    -DCMAKE_LIBRARY_PATH:string=${INSTALL_PREFIX}/lib
-    -DCMAKE_INCLUDE_PATH:string=${INSTALL_PREFIX}/include
-
-  # Build step
-  BINARY_DIR ${GRPC_JAVA_PREFIX}
 
   # Install step (skip)
   INSTALL_COMMAND ""
@@ -226,7 +196,6 @@ ExternalProject_Add (
     GTest
     GMock
     GLog
-    ${GRPC_JAVA_TARGET}
     Mupen64Plus_Core
     Mupen64Plus_Ui_Console
 
@@ -237,7 +206,6 @@ ExternalProject_Add (
     -DGTEST_ROOT:string=${GTEST_PREFIX}
     -DGMOCK_ROOT:string=${GMOCK_PREFIX}
     -DMUPEN64_ROOT:string=${CMAKE_SOURCE_DIR}/mupen64plus-core/src/api
-    -DGRPC_JAVA_ROOT:string=${GRPC_JAVA_PREFIX}/grpc-java
     -DCMAKE_LIBRARY_PATH:string=${INSTALL_PREFIX}/lib
     -DCMAKE_PROGRAM_PATH:string=${INSTALL_PREFIX}/bin
     -DCMAKE_INCLUDE_PATH:string=${INSTALL_PREFIX}/include
@@ -246,7 +214,6 @@ ExternalProject_Add (
     # remove this once that happens.
     -DCMAKE_CXX_FLAGS:string=-Wno-inconsistent-missing-override
     -DCMAKE_BUILD_TYPE:string=Debug
-    -DNETPLAY_BUILD_WITH_JAVA:string=${NETPLAY_BUILD_WITH_JAVA}
 
   # Build step
   BINARY_DIR ${NETPLAY_PREFIX}
