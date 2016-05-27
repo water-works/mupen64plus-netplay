@@ -22,10 +22,6 @@
 	path = third-party/gflags
 	url = https://github.com/gflags/gflags
   ignore = dirty
-[submodule "protobuf"]
-	path = third-party/protobuf
-	url = https://github.com/google/protobuf
-  ignore = dirty
 [submodule "netplay/base/netplay-protos"]
 	path = netplay/base/netplay-protos
 	url = https://github.com/water-works/netplay-protos

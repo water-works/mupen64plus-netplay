@@ -9,13 +9,39 @@ include (ExternalProject)
 SET (INSTALL_PREFIX ${CMAKE_SOURCE_DIR}/usr)
 
 # ------------------------------------------------------------------------------
-# Proto3
+# GRPC C/C++
 
-SET (PROTO3_PREFIX ${CMAKE_SOURCE_DIR}/third-party/protobuf)
+SET (GRPC_PREFIX ${CMAKE_SOURCE_DIR}/third-party/grpc)
+SET (GRPC_MAKE_ARGS prefix=${INSTALL_PREFIX} REQUIRE_CUSTOM_LIBRARIES_opt=true)
+
+ExternalProject_Add (
+  GRPC
+  PREFIX ${GRPC_PREFIX}
+
+  # Configure step (skip)
+  SOURCE_DIR ${GRPC_PREFIX}
+  CONFIGURE_COMMAND ""
+
+  # Build step
+  BINARY_DIR ${GRPC_PREFIX}
+  BUILD_COMMAND make ${GRPC_MAKE_ARGS}
+
+  # Install step
+  INSTALL_DIR ${INSTALL_PREFIX}
+  INSTALL_COMMAND make install ${GRPC_MAKE_ARGS}
+)
+
+# ------------------------------------------------------------------------------
+# Proto3
+#
+# Note we use the proto3 repository cloned by the grpc submodule.
+
+SET (PROTO3_PREFIX ${CMAKE_SOURCE_DIR}/third-party/grpc/third_party/protobuf)
 
 ExternalProject_Add (
   Protobuf3
   PREFIX ${PROTO3_PREFIX}
+  DEPENDS GRPC
 
   # Configure step (skip)
   SOURCE_DIR ${PROTO3_PREFIX}
@@ -29,30 +55,6 @@ ExternalProject_Add (
   # Install step
   INSTALL_DIR ${INSTALL_PREFIX}
   INSTALL_COMMAND make install prefix=${INSTALL_PREFIX}
-)
-
-# ------------------------------------------------------------------------------
-# GRPC C/C++
-
-SET (GRPC_PREFIX ${CMAKE_SOURCE_DIR}/third-party/grpc)
-SET (GRPC_MAKE_ARGS prefix=${INSTALL_PREFIX} REQUIRE_CUSTOM_LIBRARIES_opt=true)
-
-ExternalProject_Add (
-  GRPC
-  PREFIX ${GRPC_PREFIX}
-  DEPENDS Protobuf3
-
-  # Configure step (skip)
-  SOURCE_DIR ${GRPC_PREFIX}
-  CONFIGURE_COMMAND ""
-
-  # Build step
-  BINARY_DIR ${GRPC_PREFIX}
-  BUILD_COMMAND make ${GRPC_MAKE_ARGS}
-
-  # Install step
-  INSTALL_DIR ${INSTALL_PREFIX}
-  INSTALL_COMMAND make install ${GRPC_MAKE_ARGS}
 )
 
 # ------------------------------------------------------------------------------
