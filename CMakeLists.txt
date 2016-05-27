@@ -11,7 +11,7 @@ SET (INSTALL_PREFIX ${CMAKE_SOURCE_DIR}/usr)
 # ------------------------------------------------------------------------------
 # Proto3
 
-SET (PROTO3_PREFIX ${CMAKE_SOURCE_DIR}/protobuf)
+SET (PROTO3_PREFIX ${CMAKE_SOURCE_DIR}/third-party/protobuf)
 
 ExternalProject_Add (
   Protobuf3
@@ -34,7 +34,7 @@ ExternalProject_Add (
 # ------------------------------------------------------------------------------
 # GRPC C/C++
 
-SET (GRPC_PREFIX ${CMAKE_SOURCE_DIR}/grpc)
+SET (GRPC_PREFIX ${CMAKE_SOURCE_DIR}/third-party/grpc)
 SET (GRPC_MAKE_ARGS prefix=${INSTALL_PREFIX} REQUIRE_CUSTOM_LIBRARIES_opt=true)
 
 ExternalProject_Add (
@@ -58,7 +58,7 @@ ExternalProject_Add (
 # ------------------------------------------------------------------------------
 # GTest
 
-SET (GTEST_PREFIX ${CMAKE_SOURCE_DIR}/googletest/googletest)
+SET (GTEST_PREFIX ${CMAKE_SOURCE_DIR}/third-party/googletest/googletest)
 
 ExternalProject_Add (
   GTest
@@ -78,7 +78,7 @@ ExternalProject_Add (
 # ------------------------------------------------------------------------------
 # GMock
 
-SET (GMOCK_PREFIX ${CMAKE_SOURCE_DIR}/googletest/googlemock)
+SET (GMOCK_PREFIX ${CMAKE_SOURCE_DIR}/third-party/googletest/googlemock)
 
 ExternalProject_Add (
   GMock
@@ -155,7 +155,7 @@ ExternalProject_Add_Step (
 # ------------------------------------------------------------------------------
 # GFlags
 
-SET (GFLAGS_PREFIX ${CMAKE_SOURCE_DIR}/gflags)
+SET (GFLAGS_PREFIX ${CMAKE_SOURCE_DIR}/third-party/gflags)
 
 ExternalProject_Add(
   GFlags
@@ -170,7 +170,7 @@ ExternalProject_Add(
 # ------------------------------------------------------------------------------
 # GLog
 
-SET (GLOG_PREFIX ${CMAKE_SOURCE_DIR}/glog)
+SET (GLOG_PREFIX ${CMAKE_SOURCE_DIR}/third-party/glog)
 
 ExternalProject_Add(
   GLog

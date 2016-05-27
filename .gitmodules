@@ -3,11 +3,11 @@
 	url = https://github.com/water-works/mupen64plus-core
   ignore = dirty
 [submodule "googletest"]
-	path = googletest
+	path = third-party/googletest
 	url = https://github.com/google/googletest
   ignore = dirty
 [submodule "grpc"]
-	path = grpc
+	path = third-party/grpc
 	url = https://github.com/grpc/grpc
   ignore = dirty
 [submodule "mupen64plus-ui-console"]
@@ -15,15 +15,15 @@
 	url = https://github.com/water-works/mupen64plus-ui-console
   ignore = dirty
 [submodule "glog"]
-	path = glog
+	path = third-party/glog
 	url = https://github.com/google/glog
   ignore = dirty
 [submodule "gflags"]
-	path = gflags
+	path = third-party/gflags
 	url = https://github.com/gflags/gflags
   ignore = dirty
 [submodule "protobuf"]
-	path = protobuf
+	path = third-party/protobuf
 	url = https://github.com/google/protobuf
   ignore = dirty
 [submodule "netplay/base/netplay-protos"]
