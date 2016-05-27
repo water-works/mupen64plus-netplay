@@ -33,3 +33,6 @@
 [submodule "netplay/server/jars"]
 	path = netplay/server/jars
 	url = https://github.com/water-works/mupen64plus-netplay-server-jars
+[submodule "netplay/base/netplay-protos"]
+	path = netplay/base/netplay-protos
+	url = https://github.com/water-works/netplay-protos

@@ -1,7 +1,8 @@
 # GRPC output:  server/NetplayServiceProto/NetPlayServerServiceGrpc.java
 # Proto output: server/NetplayServiceProto/NetplayServiceProto.java
 
-SET(NETPLAY_SERVER_PROTO_SRC ${CMAKE_SOURCE_DIR}/base/netplayServiceProto.proto)
+SET(NETPLAY_SERVER_PROTO_SRC
+  ${CMAKE_SOURCE_DIR}/base/netplay-protos/netplayServiceProto.proto)
 
 SET (
   NETPLAY_JAVA_GRPC_SRCS
@@ -23,12 +24,12 @@ ADD_CUSTOM_COMMAND(
     --plugin=protoc-gen-grpc-java=${GRPC_PROTOC_JAVA_PLUGIN}
     --grpc-java_out=${CMAKE_CURRENT_BINARY_DIR}/src
     --proto_path=${CMAKE_SOURCE_DIR}/base
-    ${CMAKE_SOURCE_DIR}/base/netplayServiceProto.proto
+    ${CMAKE_SOURCE_DIR}/base/netplay-protos/netplayServiceProto.proto
   DEPENDS
     ${NETPLAY_SERVER_PROTO_SRC}
     ${PROTOBUF_PROTOC_EXECUTABLE}
     GrpcJavaProtocPlugin
-  COMMENT "Building GRPC Java service definitions for base/netplayServiceProto.proto"
+  COMMENT "Building GRPC Java service definitions for base/netplay-protos/netplayServiceProto.proto"
 )
 SET_SOURCE_FILES_PROPERTIES(${NETPLAY_JAVA_GRPC_SRCS} PROPERTIES GENERATED TRUE)
 
@@ -42,11 +43,11 @@ ADD_CUSTOM_COMMAND(
   ARGS
     --java_out=${CMAKE_CURRENT_BINARY_DIR}/src
     --proto_path=${CMAKE_SOURCE_DIR}/base
-    ${CMAKE_SOURCE_DIR}/base/netplayServiceProto.proto
+    ${CMAKE_SOURCE_DIR}/base/netplay-protos/netplayServiceProto.proto
   DEPENDS
     ${NETPLAY_SERVER_PROTO_SRC}
     ${PROTOBUF_PROTOC_EXECUTABLE}
-  COMMENT "Building Java Protobuf definitions for base/netplayServiceProto.proto"
+  COMMENT "Building Java Protobuf definitions for base/netplay-protos/netplayServiceProto.proto"
 )
 SET_SOURCE_FILES_PROPERTIES(${NETPLAY_JAVA_PROTO_SRCS} PROPERTIES GENERATED TRUE)
 
