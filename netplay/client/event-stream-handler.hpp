@@ -91,6 +91,11 @@ bool EventStreamHandler<ButtonsType>::ReadyAndWaitForConsoleStart() {
   VLOG(3) << "Received start game notification:\n"
           << start_game_event.DebugString();
 
+  if (start_game_event.has_stop_console()) {
+    LOG(ERROR) << "Console stopped before it was started: "
+               << start_game_event.DebugString();
+    return false;
+  }
   if (!start_game_event.has_start_game()) {
     LOG(ERROR)
         << "Expected a StartGamePB, but instead saw the following event proto: "

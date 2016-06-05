@@ -176,6 +176,22 @@ TEST_F(EventStreamHandlerTest,
   EXPECT_THAT(handler_->remote_ports(), UnorderedElementsAre());
 }
 
+TEST_F(EventStreamHandlerTest, ReadyAndWaitForConsoleStartConsoleStopped) {
+  // client ready message
+  EXPECT_CALL(*mock_stub_, SendEventRaw(_)).WillOnce(Return(mock_stream_));
+  EXPECT_CALL(*mock_stream_, Write(_, _)).WillOnce(Return(true));
+
+  start_game_event_.mutable_stop_console()->set_console_id(kConsoleId);
+  start_game_event_.mutable_stop_console()->set_stop_reason(
+      StopConsolePB::STOP_REQUESTED_BY_CLIENT);
+  EXPECT_CALL(*mock_stream_, Read(_))
+      .WillOnce(DoAll(SetArgPointee<0>(start_game_event_), Return(true)));
+
+  ASSERT_FALSE(handler_->ReadyAndWaitForConsoleStart());
+  EXPECT_THAT(handler_->local_ports(), ElementsAre(PORT_1));
+  EXPECT_THAT(handler_->remote_ports(), ElementsAre());
+}
+
 TEST_F(EventStreamHandlerTest, ReadyAndWaitForConsoleStartMissingStartGame) {
   // client ready message
   EXPECT_CALL(*mock_stub_, SendEventRaw(_)).WillOnce(Return(mock_stream_));
