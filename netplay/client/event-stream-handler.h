@@ -177,6 +177,7 @@ class EventStreamHandler : public EventStreamHandlerInterface<ButtonsType> {
     NON_BUTTON_MESSAGE,
     INVALID_BUTTONS_MESSAGE,
     REJECTED_BY_QUEUE,
+    CONSOLE_TERMINATED
   };
   ReadUntilButtonsStatus ReadUntilButtons(const Port port, int frame);
 

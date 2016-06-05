@@ -611,10 +611,20 @@ TEST_F(EventStreamHandlerTest, GetButtonsRemotePortNonButtonMessage) {
   EXPECT_CALL(*mock_stream_, Read(_))
       .WillOnce(DoAll(SetArgPointee<0>(event), Return(true)));
 
-  EXPECT_CALL(mock_coder_,
-              DecodeButtons(Property(&KeyStatePB::reserved_1, 300), _))
-      .Times(AtMost(1))
-      .WillOnce(DoAll(SetArgPointee<1>("data 300"), Return(true)));
+  string data;
+  ASSERT_EQ(StringHandler::GetButtonsStatus::FAILURE,
+            handler_->GetButtons(PORT_3, 0, &data));
+}
+
+TEST_F(EventStreamHandlerTest, GetButtonsRemotePortConsoleStopped) {
+  StartGame();
+
+  IncomingEventPB event;
+  event.mutable_stop_console()->set_console_id(kConsoleId);
+  event.mutable_stop_console()->set_stop_reason(StopConsolePB::ERROR);
+
+  EXPECT_CALL(*mock_stream_, Read(_))
+      .WillOnce(DoAll(SetArgPointee<0>(event), Return(true)));
 
   string data;
   ASSERT_EQ(StringHandler::GetButtonsStatus::FAILURE,

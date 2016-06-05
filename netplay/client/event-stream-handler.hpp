@@ -364,6 +364,11 @@ EventStreamHandler<ButtonsType>::ReadUntilButtons(const Port port, int frame) {
 
     VLOG(3) << "Read incoming event from stream:\n" << event.DebugString();
 
+    if (event.has_stop_console()) {
+      VLOG(3) << "Received console stopped message";
+      return ReadUntilButtonsStatus::CONSOLE_TERMINATED;
+    }
+
     // Return an error on all non-button statuses.
     // TODO(alexgolec): handle this more gracefully
     if (event.has_start_game() || !event.invalid_data().empty()) {
