@@ -13,6 +13,7 @@ template <typename ButtonsType>
 EventStreamHandler<ButtonsType>::EventStreamHandler(
     int console_id, int client_id, const std::vector<Port> local_ports,
     TimingsPB* timings, const ButtonCoderInterface<ButtonsType>* coder,
+    std::unique_ptr<CompletionQueueWrapper> cq,
     std::shared_ptr<NetPlayServerService::StubInterface> stub)
     : console_id_(console_id),
       client_id_(client_id),
@@ -20,6 +21,7 @@ EventStreamHandler<ButtonsType>::EventStreamHandler(
       timings_(timings),
       coder_(*coder),
       stub_(stub),
+      cq_(std::move(cq)),
       status_(HandlerStatus::NOT_YET_STARTED) {
   if (console_id_ <= 0) {
     LOG(ERROR) << "invalid console_id: " << console_id_;
@@ -48,9 +50,34 @@ EventStreamHandler<ButtonsType>::EventStreamHandler(
 // -----------------------------------------------------------------------------
 // ReadyAndWaitForConsoleStart and helpers
 
+namespace {
+
+bool ExpectTag(std::unique_ptr<CompletionQueueWrapper>& cq,
+               const void* expected_tag) {
+  void* tag;
+  bool ok = false;
+  cq->Next(&tag, &ok);
+  const bool success = ok && tag == expected_tag;
+  if (!ok) {
+    LOG(ERROR) << "Failed to successfully get next event from stream";
+    return false;
+  }
+  if (tag != expected_tag) {
+    LOG(ERROR) << "Received unexpected tag " << tag << " (expected "
+               << expected_tag << ")";
+    return false;
+  }
+  return true;
+}
+
+}  // namespace
+
 template <typename ButtonsType>
 bool EventStreamHandler<ButtonsType>::ReadyAndWaitForConsoleStart() {
-  stream_ = stub_->SendEvent(&stream_context_);
+  stream_ = stub_->AsyncSendEvent(&stream_context_, &cq_->cq, nullptr);
+  if (!ExpectTag(cq_, 0LL)) {
+    return false;
+  }
 
   // Notify the server we are ready to start the game.
   OutgoingEventPB client_ready_event;
@@ -63,7 +90,7 @@ bool EventStreamHandler<ButtonsType>::ReadyAndWaitForConsoleStart() {
 
   timings_->add_event()->set_client_ready_sync_write_start(
       client_utils::now_nanos());
-  bool success = stream_->Write(client_ready_event);
+  bool success = SyncWrite(client_ready_event);
   timings_->add_event()->set_client_ready_sync_write_finish(
       client_utils::now_nanos());
 
@@ -80,7 +107,7 @@ bool EventStreamHandler<ButtonsType>::ReadyAndWaitForConsoleStart() {
 
   timings_->add_event()->set_start_game_event_read_start(
       client_utils::now_nanos());
-  success = stream_->Read(&start_game_event);
+  success = SyncRead(&start_game_event);
   timings_->add_event()->set_start_game_event_read_finish(
       client_utils::now_nanos());
 
@@ -244,7 +271,7 @@ EventStreamHandler<ButtonsType>::PutButtons(const std::vector<
 
     timings_->add_event()->set_key_state_sync_write_start(
         client_utils::now_nanos());
-    bool success = stream_->Write(event);
+    bool success = SyncWrite(event);
     timings_->add_event()->set_key_state_sync_write_finish(
         client_utils::now_nanos());
 
@@ -355,7 +382,7 @@ EventStreamHandler<ButtonsType>::ReadUntilButtons(const Port port, int frame) {
             << " and frame " << frame;
 
     timings_->add_event()->set_key_state_read_start(client_utils::now_nanos());
-    bool success = stream_->Read(&event);
+    bool success = SyncRead(&event);
     timings_->add_event()->set_key_state_read_finish(client_utils::now_nanos());
     if (!success) {
       LOG(ERROR) << "Failed to read event.";
@@ -462,4 +489,18 @@ EventStreamHandler<ButtonsType>::GetQueue(const Port port) {
   } else {
     return it->second.get();
   }
+}
+
+template <typename ButtonsType>
+bool EventStreamHandler<ButtonsType>::SyncWrite(const OutgoingEventPB& event) {
+  void* write_tag = reinterpret_cast<void*>(++stream_op_num_);
+  stream_->Write(event, write_tag);
+  return ExpectTag(cq_, write_tag);
+}
+
+template <typename ButtonsType>
+bool EventStreamHandler<ButtonsType>::SyncRead(IncomingEventPB* event) {
+  void* read_tag = reinterpret_cast<void*>(++stream_op_num_);
+  stream_->Read(event, read_tag);
+  return ExpectTag(cq_, read_tag);
 }

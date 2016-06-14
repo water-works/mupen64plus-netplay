@@ -74,15 +74,16 @@ class MockNetPlayServerServiceStub
 };
 
 template <typename OutPB, typename InPB>
-class MockClientReaderWriter
-    : public grpc::ClientReaderWriterInterface<OutPB, InPB> {
+class MockClientAsyncReaderWriter
+    : public grpc::ClientAsyncReaderWriterInterface<OutPB, InPB> {
  public:
-  MOCK_METHOD0_T(WaitForInitialMetadata, void());
-  MOCK_METHOD0_T(WritesDone, bool());
-  MOCK_METHOD0_T(Finish, grpc::Status());
-  // virtual bool Write(const W& msg, const WriteOptions& options) = 0;
-  MOCK_METHOD2_T(Write, bool(const OutPB &, const grpc::WriteOptions &));
-  MOCK_METHOD1_T(Read, bool(InPB *));
+  MOCK_METHOD1_T(ReadInitialMetadata, void(void*));
+  MOCK_METHOD2_T(Finish, void(grpc::Status*, void*));
+
+  MOCK_METHOD2_T(Write, void(const OutPB &, void *));
+  MOCK_METHOD2_T(Read, void(IncomingEventPB *, void *));
+
+  MOCK_METHOD1_T(WritesDone, void(void *));
 };
 
 template <typename ButtonsType>
@@ -127,6 +128,17 @@ class MockEventStreamHandler : public EventStreamHandlerInterface<ButtonsType> {
   MOCK_CONST_METHOD0_T(remote_ports, std::set<Port>());
   MOCK_CONST_METHOD1_T(DelayFramesForPort, int(Port port));
   MOCK_METHOD0_T(mutable_timings, TimingsPB *());
+};
+
+class MockCompletionQueueWrapper : public CompletionQueueWrapper {
+ public:
+  MOCK_METHOD2(Next, void(void **, bool *));
+  void NextOk(uint64_t tag) {
+    EXPECT_CALL(*this, Next(testing::_, testing::_))
+        .WillOnce(testing::DoAll(
+            testing::SetArgPointee<0>(reinterpret_cast<void *>(tag)),
+            testing::SetArgPointee<1>(true)));
+  }
 };
 
 #endif  // MOCKS_H_

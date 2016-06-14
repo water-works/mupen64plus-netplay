@@ -12,6 +12,16 @@
 #include "client/button-coder-interface.h"
 #include "client/input-queue.h"
 
+// Thin, mockable wrapper around the completion queue.
+class CompletionQueueWrapper {
+ public:
+  virtual ~CompletionQueueWrapper() {}
+  virtual void Next(void** tag, bool* ok) { cq.Next(tag, ok); }
+  // Note this will be accessed directly by the stream handler for both real and
+  // mock instance of this class.
+  grpc::CompletionQueue cq;
+};
+
 template <typename ButtonsType>
 class EventStreamHandlerInterface {
  public:
@@ -81,8 +91,8 @@ class EventStreamHandlerInterface {
 template <typename ButtonsType>
 class EventStreamHandler : public EventStreamHandlerInterface<ButtonsType> {
  public:
-  typedef grpc::ClientReaderWriterInterface<OutgoingEventPB, IncomingEventPB>
-      BidirectionalStream;
+  typedef grpc::ClientAsyncReaderWriterInterface<
+      OutgoingEventPB, IncomingEventPB> BidirectionalStream;
   typedef typename EventStreamHandlerInterface<ButtonsType>::HandlerStatus
       HandlerStatus;
 
@@ -99,6 +109,7 @@ class EventStreamHandler : public EventStreamHandlerInterface<ButtonsType> {
   EventStreamHandler(int console_id, int client_id,
                      const std::vector<Port> local_ports, TimingsPB* timings,
                      const ButtonCoderInterface<ButtonsType>* coder,
+                     std::unique_ptr<CompletionQueueWrapper> cq,
                      std::shared_ptr<NetPlayServerService::StubInterface> stub);
 
   HandlerStatus status() const override {
@@ -186,6 +197,11 @@ class EventStreamHandler : public EventStreamHandlerInterface<ButtonsType> {
   // for the given port.
   ButtonsInputQueue* GetQueue(const Port port);
 
+  // Emulate synchronous read and write operations on the async stream.
+  uint64_t stream_op_num_ = 0;
+  bool SyncWrite(const OutgoingEventPB& event);
+  bool SyncRead(IncomingEventPB* event);
+
   const int console_id_;
   const int client_id_;
   std::set<Port> local_ports_;
@@ -193,6 +209,7 @@ class EventStreamHandler : public EventStreamHandlerInterface<ButtonsType> {
   // Borrowed reference
   const ButtonCoderInterface<ButtonsType>& coder_;
   std::shared_ptr<NetPlayServerService::StubInterface> stub_;
+  std::unique_ptr<CompletionQueueWrapper> cq_;
   grpc::ClientContext stream_context_;
   std::unique_ptr<BidirectionalStream> stream_;
 
