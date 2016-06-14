@@ -69,7 +69,8 @@ class EventStreamHandlerTest : public ::testing::Test {
       mock_cq_->NextOk(2LL);
     }
 
-    handler_->ReadyAndWaitForConsoleStart();
+    void* tag = handler_->ClientReady();
+    EXPECT_TRUE(handler_->WaitForConsoleStart(tag));
   }
 
   static const int kConsoleId;
@@ -154,7 +155,7 @@ TEST_F(EventStreamHandlerTest, EventStreamHandlerPortAny) {
 }
 
 // -----------------------------------------------------------------------------
-// ReadyAndWaitForConsoleStart Tests
+// ClientReady and WaitForConsoleStart tests
 
 TEST_F(EventStreamHandlerTest, ReadyAndWaitForConsoleStartSuccess) {
   // client ready message
@@ -173,7 +174,7 @@ TEST_F(EventStreamHandlerTest, ReadyAndWaitForConsoleStartSuccess) {
     mock_cq_->NextOk(2LL);
   }
 
-  ASSERT_TRUE(handler_->ReadyAndWaitForConsoleStart());
+  ASSERT_TRUE(handler_->WaitForConsoleStart(handler_->ClientReady()));
   EXPECT_THAT(handler_->local_ports(), UnorderedElementsAre(PORT_1));
   EXPECT_THAT(handler_->remote_ports(), UnorderedElementsAre(PORT_2, PORT_3));
 
@@ -191,7 +192,7 @@ TEST_F(EventStreamHandlerTest, ReadyAndWaitForConsoleStartStreamOpenFailed) {
   // After stream open
   EXPECT_CALL(*mock_cq_, Next(_, _)).WillOnce(SetArgPointee<1>(false));
 
-  ASSERT_FALSE(handler_->ReadyAndWaitForConsoleStart());
+  ASSERT_FALSE(handler_->WaitForConsoleStart(handler_->ClientReady()));
 }
 
 TEST_F(EventStreamHandlerTest, ReadyAndWaitForConsoleStartFailedToWriteReady) {
@@ -209,7 +210,7 @@ TEST_F(EventStreamHandlerTest, ReadyAndWaitForConsoleStartFailedToWriteReady) {
     EXPECT_CALL(*mock_cq_, Next(_, _)).WillOnce(SetArgPointee<1>(false));
   }
 
-  ASSERT_FALSE(handler_->ReadyAndWaitForConsoleStart());
+  ASSERT_FALSE(handler_->WaitForConsoleStart(handler_->ClientReady()));
   EXPECT_THAT(handler_->local_ports(), UnorderedElementsAre(PORT_1));
   EXPECT_THAT(handler_->remote_ports(), UnorderedElementsAre());
 }
@@ -233,7 +234,7 @@ TEST_F(EventStreamHandlerTest,
   EXPECT_CALL(*mock_stream_, Read(_, _));
   EXPECT_CALL(*mock_cq_, Next(_, _)).WillOnce(SetArgPointee<1>(false));
 
-  ASSERT_FALSE(handler_->ReadyAndWaitForConsoleStart());
+  ASSERT_FALSE(handler_->WaitForConsoleStart(handler_->ClientReady()));
   EXPECT_THAT(handler_->local_ports(), UnorderedElementsAre(PORT_1));
   EXPECT_THAT(handler_->remote_ports(), UnorderedElementsAre());
 }
@@ -259,7 +260,7 @@ TEST_F(EventStreamHandlerTest, ReadyAndWaitForConsoleStartConsoleStopped) {
     mock_cq_->NextOk(2LL);
   }
 
-  ASSERT_FALSE(handler_->ReadyAndWaitForConsoleStart());
+  ASSERT_FALSE(handler_->WaitForConsoleStart(handler_->ClientReady()));
   EXPECT_THAT(handler_->local_ports(), ElementsAre(PORT_1));
   EXPECT_THAT(handler_->remote_ports(), ElementsAre());
 }
@@ -283,7 +284,7 @@ TEST_F(EventStreamHandlerTest, ReadyAndWaitForConsoleStartMissingStartGame) {
     mock_cq_->NextOk(2LL);
   }
 
-  ASSERT_FALSE(handler_->ReadyAndWaitForConsoleStart());
+  ASSERT_FALSE(handler_->WaitForConsoleStart(handler_->ClientReady()));
   EXPECT_THAT(handler_->local_ports(), ElementsAre(PORT_1));
   EXPECT_THAT(handler_->remote_ports(), ElementsAre());
 }
@@ -310,7 +311,7 @@ TEST_F(EventStreamHandlerTest, ReadyAndWaitForConsoleStartInvalidConsoleId) {
       mock_cq_->NextOk(2LL);
     }
 
-    ASSERT_FALSE(handler_->ReadyAndWaitForConsoleStart());
+    ASSERT_FALSE(handler_->WaitForConsoleStart(handler_->ClientReady()));
     EXPECT_THAT(handler_->local_ports(), ElementsAre(PORT_1));
     EXPECT_THAT(handler_->remote_ports(), ElementsAre());
   }
@@ -334,7 +335,7 @@ TEST_F(EventStreamHandlerTest, ReadyAndWaitForConsoleStartInvalidConsoleId) {
       mock_cq_->NextOk(4LL);
     }
 
-    ASSERT_FALSE(handler_->ReadyAndWaitForConsoleStart());
+    ASSERT_FALSE(handler_->WaitForConsoleStart(handler_->ClientReady()));
     EXPECT_THAT(handler_->local_ports(), ElementsAre(PORT_1));
     EXPECT_THAT(handler_->remote_ports(), ElementsAre());
   }
@@ -359,7 +360,7 @@ TEST_F(EventStreamHandlerTest, ReadyAndWaitForConsoleStartInvalidConsoleId) {
       mock_cq_->NextOk(6LL);
     }
 
-    ASSERT_FALSE(handler_->ReadyAndWaitForConsoleStart());
+    ASSERT_FALSE(handler_->WaitForConsoleStart(handler_->ClientReady()));
     EXPECT_THAT(handler_->local_ports(), ElementsAre(PORT_1));
     EXPECT_THAT(handler_->remote_ports(), ElementsAre());
   }
@@ -384,7 +385,7 @@ TEST_F(EventStreamHandlerTest, ReadyAndWaitForConsoleStartMissingLocalPort) {
     mock_cq_->NextOk(2LL);
   }
 
-  ASSERT_FALSE(handler_->ReadyAndWaitForConsoleStart());
+  ASSERT_FALSE(handler_->WaitForConsoleStart(handler_->ClientReady()));
   EXPECT_THAT(handler_->local_ports(), ElementsAre(PORT_1));
   EXPECT_THAT(handler_->remote_ports(), ElementsAre());
 }
@@ -411,7 +412,7 @@ TEST_F(EventStreamHandlerTest, ReadyAndWaitForConsoleStartDuplicatePort) {
     mock_cq_->NextOk(2LL);
   }
 
-  ASSERT_FALSE(handler_->ReadyAndWaitForConsoleStart());
+  ASSERT_FALSE(handler_->WaitForConsoleStart(handler_->ClientReady()));
   EXPECT_THAT(handler_->local_ports(), ElementsAre(PORT_1));
   EXPECT_THAT(handler_->remote_ports(), ElementsAre());
 }
@@ -449,7 +450,7 @@ TEST_F(EventStreamHandlerTest, ReadyAndWaitForConsoleStartTooManyPorts) {
     mock_cq_->NextOk(2LL);
   }
 
-  ASSERT_FALSE(handler_->ReadyAndWaitForConsoleStart());
+  ASSERT_FALSE(handler_->WaitForConsoleStart(handler_->ClientReady()));
   EXPECT_THAT(handler_->local_ports(), ElementsAre(PORT_1));
   EXPECT_THAT(handler_->remote_ports(), ElementsAre());
 }
@@ -477,7 +478,7 @@ TEST_F(EventStreamHandlerTest, ReadyAndWaitForConsoleStartPortAny) {
     mock_cq_->NextOk(2LL);
   }
 
-  ASSERT_FALSE(handler_->ReadyAndWaitForConsoleStart());
+  ASSERT_FALSE(handler_->WaitForConsoleStart(handler_->ClientReady()));
   EXPECT_THAT(handler_->local_ports(), ElementsAre(PORT_1));
   EXPECT_THAT(handler_->remote_ports(), ElementsAre());
 }
@@ -501,7 +502,7 @@ TEST_F(EventStreamHandlerTest,
     mock_cq_->NextOk(2LL);
   }
 
-  ASSERT_FALSE(handler_->ReadyAndWaitForConsoleStart());
+  ASSERT_FALSE(handler_->WaitForConsoleStart(handler_->ClientReady()));
   EXPECT_THAT(handler_->local_ports(), ElementsAre(PORT_1));
   EXPECT_THAT(handler_->remote_ports(), ElementsAre());
 }

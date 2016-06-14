@@ -116,7 +116,8 @@ class MockEventStreamHandler : public EventStreamHandlerInterface<ButtonsType> {
   typedef EventStreamHandlerInterface<ButtonsType> BaseType;
 
   MOCK_CONST_METHOD0_T(status, typename BaseType::HandlerStatus());
-  MOCK_METHOD0_T(ReadyAndWaitForConsoleStart, bool());
+  MOCK_METHOD0_T(ClientReady, void*());
+  MOCK_METHOD1_T(WaitForConsoleStart, bool(void*));
   MOCK_METHOD3_T(GetButtons,
                  typename BaseType::GetButtonsStatus(const Port port, int frame,
                                                      ButtonsType *buttons));

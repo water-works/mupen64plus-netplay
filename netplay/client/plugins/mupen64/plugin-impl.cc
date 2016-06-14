@@ -74,7 +74,7 @@ int PluginImpl::InitiateNetplay(NETPLAY_INFO* netplay_info) {
   stream_handler_ = client_->MakeEventStreamHandler();
   VLOG(3)
       << "Indicating the netplay plugin is ready and waiting for console start";
-  if (!stream_handler_->ReadyAndWaitForConsoleStart()) {
+  if (!stream_handler_->WaitForConsoleStart(stream_handler_->ClientReady())) {
     LOG(ERROR) << "Failed waiting for the game to start.";
     return 0;
   }

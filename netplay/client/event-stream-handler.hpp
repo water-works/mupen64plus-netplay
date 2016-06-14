@@ -48,7 +48,7 @@ EventStreamHandler<ButtonsType>::EventStreamHandler(
 }
 
 // -----------------------------------------------------------------------------
-// ReadyAndWaitForConsoleStart and helpers
+// ClientReady and WaitForConsoleStart and their helpers
 
 namespace {
 
@@ -73,9 +73,14 @@ bool ExpectTag(std::unique_ptr<CompletionQueueWrapper>& cq,
 }  // namespace
 
 template <typename ButtonsType>
-bool EventStreamHandler<ButtonsType>::ReadyAndWaitForConsoleStart() {
+void* EventStreamHandler<ButtonsType>::ClientReady() {
   stream_ = stub_->AsyncSendEvent(&stream_context_, &cq_->cq, nullptr);
-  if (!ExpectTag(cq_, 0LL)) {
+  return nullptr;
+}
+
+template <typename ButtonsType>
+bool EventStreamHandler<ButtonsType>::WaitForConsoleStart(void* tag) {
+  if (!ExpectTag(cq_, tag)) {
     return false;
   }
 

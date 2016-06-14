@@ -74,7 +74,8 @@ class EventStreamHandlerInterface {
   };
 
   virtual HandlerStatus status() const = 0;
-  virtual bool ReadyAndWaitForConsoleStart() = 0;
+  virtual void* ClientReady() = 0;
+  virtual bool WaitForConsoleStart(void*) = 0;
   virtual GetButtonsStatus GetButtons(const Port port, int frame,
                                       ButtonsType* buttons) = 0;
   virtual PutButtonsStatus PutButtons(
@@ -116,9 +117,13 @@ class EventStreamHandler : public EventStreamHandlerInterface<ButtonsType> {
     return status_;
   }
 
-  // Signal to the server that we are ready to start the game and wait until
-  // the server indicates the console has started.
-  bool ReadyAndWaitForConsoleStart();
+  // Signal that the client is ready. The returned value is meant to be passed
+  // to WaitForConsoleStart.
+  void* ClientReady();
+
+  // Block until we receive a console start event from the server. Returns true
+  // if and only if the game was successfully started.
+  bool WaitForConsoleStart(void*);
 
   // Send the given buttons to the server.
   typedef typename EventStreamHandlerInterface<ButtonsType>::PutButtonsStatus
