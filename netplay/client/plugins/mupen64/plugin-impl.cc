@@ -27,9 +27,10 @@ int PluginImpl::InitiateNetplay(NETPLAY_INFO* netplay_info) {
     controller->Channel = -1;
   }
 
-  *netplay_info->Enabled = configuration_.enabled;
+  M64Config configuration = M64Config::FromConfigHandler(*config_handler_);
+  *netplay_info->Enabled = configuration.enabled;
 
-  if (!configuration_.enabled) {
+  if (!configuration.enabled) {
     LOG(INFO) << "Netplay disabled, returning.";
     return 1;
   }
@@ -47,8 +48,8 @@ int PluginImpl::InitiateNetplay(NETPLAY_INFO* netplay_info) {
   // Fill requested ports
   vector<Port> requested_ports;
   for (int encoded_port :
-       {configuration_.port_1_request, configuration_.port_2_request,
-        configuration_.port_3_request, configuration_.port_4_request}) {
+       {configuration.port_1_request, configuration.port_2_request,
+        configuration.port_3_request, configuration.port_4_request}) {
     if (encoded_port == -1) {
       continue;
     }
@@ -64,7 +65,7 @@ int PluginImpl::InitiateNetplay(NETPLAY_INFO* netplay_info) {
   // Request ports
   PlugControllerResponsePB::Status status;
   VLOG(3) << "Requesting found ports";
-  if (!client_->PlugControllers(configuration_.console_id, requested_ports,
+  if (!client_->PlugControllers(configuration.console_id, requested_ports,
                                 &status)) {
     LOG(ERROR) << "PlugControllers returned bad status: "
                << PlugControllerResponsePB::Status_Name(status);

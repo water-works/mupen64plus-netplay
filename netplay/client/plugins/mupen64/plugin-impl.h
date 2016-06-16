@@ -16,11 +16,12 @@ class PluginImpl {
 
   static const char kPluginName[];
 
-  PluginImpl(const M64Config& config, unique_ptr<M64Client> client)
-      : configuration_(config), client_(std::move(client)) {}
-
-  // Returns a reference to the internal configuration struct.
-  const M64Config& configuration() const { return configuration_; }
+  PluginImpl(ConfigHandlerInterface* config_handler, std::istream* cin,
+             std::ostream* cout, unique_ptr<M64Client> client)
+      : config_handler_(config_handler),
+        cin_(*CHECK_NOTNULL(cin)),
+        cout_(*CHECK_NOTNULL(cout)),
+        client_(std::move(client)) {}
 
   // ---------------------------------------------------------------------------
   // mupen64plus-core API method implementations
@@ -43,8 +44,15 @@ class PluginImpl {
   bool PermuteNetplayControllers(const std::vector<Port>& requested_ports,
                                  NETPLAY_INFO* netplay_info);
 
-  const M64Config configuration_;
+  // Interactively create the console by communicating with the user.
+  bool InteractiveConfig(int64_t* console_id, bool* created_console);
+
+  unique_ptr<ConfigHandlerInterface> config_handler_;
   unique_ptr<M64Client> client_;
+  std::istream& cin_;
+  std::ostream& cout_;
+
+  // Populated by InitializeNetplay.
   unique_ptr<EventStreamHandlerInterface<BUTTONS>> stream_handler_;
 };
 

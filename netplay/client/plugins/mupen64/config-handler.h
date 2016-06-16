@@ -15,6 +15,8 @@ using std::unique_ptr;
 // details.
 class ConfigHandlerInterface {
  public:
+  virtual ~ConfigHandlerInterface() {}
+
   virtual bool GetString(const string& param_name, string* out) const = 0;
   virtual int GetInt(const string& param_name) const = 0;
   virtual bool GetBool(const string& param_name) const = 0;

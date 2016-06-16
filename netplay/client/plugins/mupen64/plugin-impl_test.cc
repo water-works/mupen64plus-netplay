@@ -3,6 +3,7 @@
 #include <set>
 
 #include "client/mocks.h"
+#include "client/plugins/mupen64/mocks.h"
 #include "client/plugins/mupen64/util.h"
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
@@ -33,19 +34,24 @@ class PluginImplTest : public testing::Test {
   void Init(Port port_1_request, Port port_2_request, Port port_3_request,
             Port port_4_request, const set<int>& input_channels,
             bool enabled = true) {
-    config_.enabled = enabled;
-    config_.server_hostname = "server.hostname.com";
-    config_.server_port = 1234;
-    config_.console_id = kConsoleId;
-    config_.delay_frames = kDelayFrames;
-    config_.port_1_request = util::PortToM64RequestedInt(port_1_request);
-    config_.port_2_request = util::PortToM64RequestedInt(port_2_request);
-    config_.port_3_request = util::PortToM64RequestedInt(port_3_request);
-    config_.port_4_request = util::PortToM64RequestedInt(port_4_request);
+    mock_config_handler_ = new MockConfigHandler();
+
+    M64Config config;
+    config.enabled = enabled;
+    config.server_hostname = "server.hostname.com";
+    config.server_port = 1234;
+    config.console_id = kConsoleId;
+    config.delay_frames = kDelayFrames;
+    config.port_1_request = util::PortToM64RequestedInt(port_1_request);
+    config.port_2_request = util::PortToM64RequestedInt(port_2_request);
+    config.port_3_request = util::PortToM64RequestedInt(port_3_request);
+    config.port_4_request = util::PortToM64RequestedInt(port_4_request);
+    mock_config_handler_->ExpectConfig(config);
 
     mock_client_ = new StrictMockClient();
     plugin_impl_.reset(new PluginImpl(
-        config_, std::unique_ptr<MockNetplayClient<BUTTONS>>(mock_client_)));
+        mock_config_handler_, &mock_cin_, &mock_cout_,
+        std::unique_ptr<MockNetplayClient<BUTTONS>>(mock_client_)));
 
     controls_[0] = {0};
     controls_[1] = {0};
@@ -178,11 +184,14 @@ class PluginImplTest : public testing::Test {
   static const int kDelayFrames;
   static const int kConsoleId;
 
+  std::stringstream mock_cin_;
+  std::stringstream mock_cout_;
+
   // Owned by plugin_impl_
   StrictMockClient* mock_client_;
   StrictMockEventStreamHandler* mock_stream_handler_;
 
-  M64Config config_;
+  MockConfigHandler* mock_config_handler_;
   unique_ptr<PluginImpl> plugin_impl_;
 
   // mupen64plus-core data structures

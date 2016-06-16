@@ -21,22 +21,23 @@
 // Global state
 
 static std::unique_ptr<PluginImpl> l_PluginImpl;
+static bool l_PluginStartupCalled = false;
+static m64p_dynlib_handle l_CoreLibHandle;
 
 // -----------------------------------------------------------------------------
 // PluginStartup and helpers
-
-static std::unique_ptr<ConfigHandler> l_ConfigHandler;
 
 EXPORT m64p_error CALL
 PluginStartup(m64p_dynlib_handle CoreLibHandle, void *Context,
               void (*DebugCallback)(void *, int, const char *)) {
   VLOG(2) << "Calling PluginStartup";
 
-  if (l_ConfigHandler != nullptr) {
+  if (l_PluginStartupCalled) {
     return M64ERR_ALREADY_INIT;
   }
 
-  l_ConfigHandler = ConfigHandler::MakeConfigHandler(CoreLibHandle, "Netplay");
+  l_CoreLibHandle = CoreLibHandle;
+  l_PluginStartupCalled = true;
 
   return M64ERR_SUCCESS;
 }
@@ -68,7 +69,9 @@ EXPORT m64p_error CALL PluginGetVersion(m64p_plugin_type *plugin_type,
 EXPORT int CALL InitiateNetplay(NETPLAY_INFO *netplay_info) {
   VLOG(2) << "Calling InitiateNetplay";
 
-  const M64Config& config = M64Config::FromConfigHandler(*l_ConfigHandler);
+  std::unique_ptr<ConfigHandlerInterface> config_handler =
+      ConfigHandler::MakeConfigHandler(l_CoreLibHandle, "Netplay");
+  const M64Config& config = M64Config::FromConfigHandler(*config_handler);
 
   if (!config.enabled) {
     return 1;
@@ -87,7 +90,9 @@ EXPORT int CALL InitiateNetplay(NETPLAY_INFO *netplay_info) {
   std::unique_ptr<PluginImpl::M64Client> client(new NetplayClient<BUTTONS>(
       stub, std::unique_ptr<Mupen64ButtonCoder>(new Mupen64ButtonCoder()),
       config.delay_frames));
-  l_PluginImpl.reset(new PluginImpl(config, std::move(client)));
+
+  l_PluginImpl.reset(new PluginImpl(config_handler.release(), &std::cin,
+                                    &std::cout, std::move(client)));
 
   return l_PluginImpl->InitiateNetplay(netplay_info);
 }
