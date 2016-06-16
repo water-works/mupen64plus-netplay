@@ -13,7 +13,7 @@ template <typename ButtonsType>
 NetplayClient<ButtonsType>::NetplayClient(
     std::shared_ptr<NetPlayServerService::StubInterface> stub,
     std::unique_ptr<ButtonCoderInterface<ButtonsType>> coder, int delay_frames,
-    int console_id)
+    int64_t console_id)
     : delay_frames_(delay_frames),
       console_id_(console_id),
       coder_(std::move(coder)),

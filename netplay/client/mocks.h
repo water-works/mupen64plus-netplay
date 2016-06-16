@@ -104,8 +104,8 @@ class MockNetplayClient : public NetplayClientInterface<ButtonsType> {
   MOCK_METHOD0_T(MakeEventStreamHandlerRaw,
                  EventStreamHandlerInterface<ButtonsType>*());
   MOCK_CONST_METHOD0_T(delay_frames, int());
-  MOCK_CONST_METHOD0_T(console_id, int());
-  MOCK_CONST_METHOD0_T(client_id, int());
+  MOCK_CONST_METHOD0_T(console_id, int64_t());
+  MOCK_CONST_METHOD0_T(client_id, int64_t());
   MOCK_CONST_METHOD0_T(local_ports, const std::vector<Port> &());
   MOCK_METHOD0(mutable_timings, TimingsPB*());
 };
