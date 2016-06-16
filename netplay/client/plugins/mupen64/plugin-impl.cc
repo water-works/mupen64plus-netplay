@@ -64,7 +64,8 @@ int PluginImpl::InitiateNetplay(NETPLAY_INFO* netplay_info) {
   // Request ports
   PlugControllerResponsePB::Status status;
   VLOG(3) << "Requesting found ports";
-  if (!client_->PlugControllers(requested_ports, &status)) {
+  if (!client_->PlugControllers(configuration_.console_id, requested_ports,
+                                &status)) {
     LOG(ERROR) << "PlugControllers returned bad status: "
                << PlugControllerResponsePB::Status_Name(status);
     return 0;

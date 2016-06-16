@@ -86,7 +86,7 @@ EXPORT int CALL InitiateNetplay(NETPLAY_INFO *netplay_info) {
       NetPlayServerService::NewStub(channel);
   std::unique_ptr<PluginImpl::M64Client> client(new NetplayClient<BUTTONS>(
       stub, std::unique_ptr<Mupen64ButtonCoder>(new Mupen64ButtonCoder()),
-      config.delay_frames, config.console_id));
+      config.delay_frames));
   l_PluginImpl.reset(new PluginImpl(config, std::move(client)));
 
   return l_PluginImpl->InitiateNetplay(netplay_info);

@@ -36,7 +36,7 @@ class PluginImplTest : public testing::Test {
     config_.enabled = enabled;
     config_.server_hostname = "server.hostname.com";
     config_.server_port = 1234;
-    config_.console_id = 99;
+    config_.console_id = kConsoleId;
     config_.delay_frames = kDelayFrames;
     config_.port_1_request = util::PortToM64RequestedInt(port_1_request);
     config_.port_2_request = util::PortToM64RequestedInt(port_2_request);
@@ -145,8 +145,9 @@ class PluginImplTest : public testing::Test {
 
   // Initiate netplay with default values.
   void InitiateNetplayDefault() {
-    EXPECT_CALL(*mock_client_,
-                PlugControllers(UnorderedElementsAre(PORT_1, PORT_3), _))
+    EXPECT_CALL(
+        *mock_client_,
+        PlugControllers(kConsoleId, UnorderedElementsAre(PORT_1, PORT_3), _))
         .WillOnce(Return(true));
     EXPECT_CALL(*mock_client_, MakeEventStreamHandlerRaw())
         .WillOnce(
@@ -175,6 +176,7 @@ class PluginImplTest : public testing::Test {
   }
 
   static const int kDelayFrames;
+  static const int kConsoleId;
 
   // Owned by plugin_impl_
   StrictMockClient* mock_client_;
@@ -196,6 +198,7 @@ class PluginImplTest : public testing::Test {
 };
 
 const int PluginImplTest::kDelayFrames = 3;
+const int PluginImplTest::kConsoleId = 3;
 
 // -----------------------------------------------------------------------------
 // InitiateNetplay
@@ -207,8 +210,9 @@ TEST_F(PluginImplTest, InitiateNetplaySuccessSpecificPorts) {
        UNKNOWN,  // Port 4 request
        {0, 2});
 
-  EXPECT_CALL(*mock_client_,
-              PlugControllers(UnorderedElementsAre(PORT_1, PORT_3), _))
+  EXPECT_CALL(
+      *mock_client_,
+      PlugControllers(kConsoleId, UnorderedElementsAre(PORT_1, PORT_3), _))
       .WillOnce(Return(true));
   EXPECT_CALL(*mock_client_, MakeEventStreamHandlerRaw())
       .WillOnce(
@@ -247,8 +251,9 @@ TEST_F(PluginImplTest, InitiateNetplaySuccessAnyPorts) {
        UNKNOWN,   // Port 4 request
        {0, 2});
 
-  EXPECT_CALL(*mock_client_,
-              PlugControllers(UnorderedElementsAre(PORT_ANY, PORT_ANY), _))
+  EXPECT_CALL(
+      *mock_client_,
+      PlugControllers(kConsoleId, UnorderedElementsAre(PORT_ANY, PORT_ANY), _))
       .WillOnce(Return(true));
   EXPECT_CALL(*mock_client_, MakeEventStreamHandlerRaw())
       .WillOnce(
@@ -300,8 +305,9 @@ TEST_F(PluginImplTest, InitiateNetplayMoreLocalPortsThanInputChannels) {
        UNKNOWN,   // Port 4 request
        {0, 2});
 
-  EXPECT_CALL(*mock_client_,
-              PlugControllers(UnorderedElementsAre(PORT_ANY, PORT_ANY), _))
+  EXPECT_CALL(
+      *mock_client_,
+      PlugControllers(kConsoleId, UnorderedElementsAre(PORT_ANY, PORT_ANY), _))
       .WillOnce(Return(true));
   EXPECT_CALL(*mock_client_, MakeEventStreamHandlerRaw())
       .WillOnce(
@@ -336,7 +342,8 @@ TEST_F(PluginImplTest, InitiateNetplayMoreInputChannelsThanLocalPorts) {
 
   EXPECT_CALL(
       *mock_client_,
-      PlugControllers(UnorderedElementsAre(PORT_ANY, PORT_ANY, PORT_ANY), _))
+      PlugControllers(kConsoleId,
+                      UnorderedElementsAre(PORT_ANY, PORT_ANY, PORT_ANY), _))
       .WillOnce(Return(true));
   EXPECT_CALL(*mock_client_, MakeEventStreamHandlerRaw())
       .WillOnce(
@@ -369,8 +376,9 @@ TEST_F(PluginImplTest, InitiateNetplayPlugControllersFails) {
        UNKNOWN,   // Port 4 request
        {0, 3});
 
-  EXPECT_CALL(*mock_client_,
-              PlugControllers(UnorderedElementsAre(PORT_ANY, PORT_ANY), _))
+  EXPECT_CALL(
+      *mock_client_,
+      PlugControllers(kConsoleId, UnorderedElementsAre(PORT_ANY, PORT_ANY), _))
       .WillOnce(Return(false));
 
   EXPECT_FALSE(plugin_impl_->InitiateNetplay(&netplay_info_));
@@ -385,8 +393,9 @@ TEST_F(PluginImplTest, InitiateNetplayFailToWaitForGameStartFails) {
        UNKNOWN,   // Port 4 request
        {0, 3});
 
-  EXPECT_CALL(*mock_client_,
-              PlugControllers(UnorderedElementsAre(PORT_ANY, PORT_ANY), _))
+  EXPECT_CALL(
+      *mock_client_,
+      PlugControllers(kConsoleId, UnorderedElementsAre(PORT_ANY, PORT_ANY), _))
       .WillOnce(Return(true));
   EXPECT_CALL(*mock_client_, MakeEventStreamHandlerRaw())
       .WillOnce(

@@ -12,20 +12,19 @@
 template <typename ButtonsType>
 NetplayClient<ButtonsType>::NetplayClient(
     std::shared_ptr<NetPlayServerService::StubInterface> stub,
-    std::unique_ptr<ButtonCoderInterface<ButtonsType>> coder, int delay_frames,
-    int64_t console_id)
+    std::unique_ptr<ButtonCoderInterface<ButtonsType>> coder, int delay_frames)
     : delay_frames_(delay_frames),
-      console_id_(console_id),
       coder_(std::move(coder)),
+      console_id_(-1),
       client_id_(-1),
       stub_(stub) {}
 
 template <typename ButtonsType>
 bool NetplayClient<ButtonsType>::PlugControllers(
-    const std::vector<Port>& local_ports,
+    int64_t console_id, const std::vector<Port>& local_ports,
     PlugControllerResponsePB::Status* status) {
   PlugControllerRequestPB request;
-  request.set_console_id(console_id_);
+  request.set_console_id(console_id);
   request.set_delay_frames(delay_frames_);
 
   // Populate all the requested local_ports, and return false if the size is not
@@ -70,8 +69,8 @@ bool NetplayClient<ButtonsType>::PlugControllers(
 
   VLOG(3) << "Received plug controllers response:\n" << response.DebugString();
 
-  if (response.console_id() != console_id_) {
-    LOG(ERROR) << "Console ID doesn't match. Expected " << console_id_
+  if (response.console_id() != console_id) {
+    LOG(ERROR) << "Console ID doesn't match. Expected " << console_id
                << ", but saw " << response.console_id();
     return false;
   }
@@ -83,6 +82,7 @@ bool NetplayClient<ButtonsType>::PlugControllers(
   }
 
   *status = response.status();
+  console_id_ = console_id;
   return true;
 }
 

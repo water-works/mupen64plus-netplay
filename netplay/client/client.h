@@ -14,7 +14,8 @@ template <typename ButtonsType>
 class NetplayClientInterface {
  public:
   virtual ~NetplayClientInterface() {}
-  virtual bool PlugControllers(const std::vector<Port>& ports,
+  virtual bool PlugControllers(int64_t console_id,
+                               const std::vector<Port>& ports,
                                PlugControllerResponsePB::Status* status) = 0;
   virtual int delay_frames() const = 0;
   virtual int64_t console_id() const = 0;
@@ -47,12 +48,12 @@ class NetplayClient : public NetplayClientInterface<ButtonsType> {
   // Creates a new client with the given local frame delay and console ID.
   NetplayClient(std::shared_ptr<NetPlayServerService::StubInterface> stub,
                 std::unique_ptr<ButtonCoderInterface<ButtonsType>> coder,
-                int delay_frames, int64_t console_id);
+                int delay_frames);
 
   // Request that the given ports be plugged into the server's virtual console.
   // Returns the resulting status code returned from the server for this
   // request.
-  bool PlugControllers(const std::vector<Port>& ports,
+  bool PlugControllers(int64_t console_id, const std::vector<Port>& ports,
                        PlugControllerResponsePB::Status* status) override;
 
   // Accessors
@@ -70,9 +71,9 @@ class NetplayClient : public NetplayClientInterface<ButtonsType> {
 
  private:
   const int delay_frames_;
-  const int64_t console_id_;
   std::unique_ptr<ButtonCoderInterface<ButtonsType>> coder_;
-  // Client ID, set by the PlugControllers method.
+  // Client ID and console ID are set by the PlugControllers method.
+  int64_t console_id_;
   int64_t client_id_;
 
   std::vector<Port> local_ports_;

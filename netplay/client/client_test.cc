@@ -40,7 +40,7 @@ class NetplayClientTest : public ::testing::Test {
       : mock_stub_(new MockNetPlayServerServiceStub()),
         mock_coder_(new MockButtonCoder<string>()),
         client_(new StringClient(mock_stub_, std::move(mock_coder_),
-                                 kDelayFrames, kConsoleId)) {}
+                                 kDelayFrames)) {}
 
   std::shared_ptr<MockNetPlayServerServiceStub> mock_stub_;
   std::unique_ptr<MockButtonCoder<string>> mock_coder_;
@@ -54,8 +54,10 @@ const char NetplayClientTest::kConsoleTitle[] = "console title";
 const char NetplayClientTest::kRomName[] = "rom name";
 
 TEST_F(NetplayClientTest, Accessors) {
-  EXPECT_EQ(kConsoleId, client_->console_id());
   EXPECT_EQ(kDelayFrames, client_->delay_frames());
+
+  // These are set by PlugControllers.
+  EXPECT_EQ(-1, client_->console_id());
   EXPECT_EQ(-1, client_->client_id());
 }
 
@@ -151,7 +153,7 @@ TEST_F(NetplayClientTest, PlugControllerSuccess) {
 
     PlugControllerResponsePB::Status status =
         PlugControllerResponsePB::UNSPECIFIED_FAILURE;
-    ASSERT_TRUE(client_->PlugControllers(ports, &status));
+    ASSERT_TRUE(client_->PlugControllers(kConsoleId, ports, &status));
     ASSERT_EQ(status, PlugControllerResponsePB::SUCCESS);
     EXPECT_EQ(kClientId, client_->client_id());
   }
@@ -178,7 +180,7 @@ TEST_F(NetplayClientTest, PlugControllerEmptyPorts) {
 
   PlugControllerResponsePB::Status status =
       PlugControllerResponsePB::UNSPECIFIED_FAILURE;
-  EXPECT_FALSE(client_->PlugControllers({}, &status));
+  EXPECT_FALSE(client_->PlugControllers(kConsoleId, {}, &status));
 }
 
 TEST_F(NetplayClientTest, PlugControllerMismatchedConsoleId) {
@@ -190,7 +192,7 @@ TEST_F(NetplayClientTest, PlugControllerMismatchedConsoleId) {
 
   PlugControllerResponsePB::Status status =
       PlugControllerResponsePB::UNSPECIFIED_FAILURE;
-  EXPECT_FALSE(client_->PlugControllers({PORT_1}, &status));
+  EXPECT_FALSE(client_->PlugControllers(kConsoleId, {PORT_1}, &status));
 }
 
 TEST_F(NetplayClientTest, PlugControllerRPCFailure) {
@@ -199,5 +201,5 @@ TEST_F(NetplayClientTest, PlugControllerRPCFailure) {
 
   PlugControllerResponsePB::Status status =
       PlugControllerResponsePB::UNSPECIFIED_FAILURE;
-  EXPECT_FALSE(client_->PlugControllers({PORT_1}, &status));
+  EXPECT_FALSE(client_->PlugControllers(kConsoleId, {PORT_1}, &status));
 }
