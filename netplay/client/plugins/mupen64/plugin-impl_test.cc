@@ -73,6 +73,8 @@ class PluginImplTest : public testing::Test {
     netplay_info_.NetplayControls = netplay_controllers_;
 
     input_channels_ = input_channels;
+
+    SetUpInputExectations();
   }
 
   void ExpectNetplayInfo(const set<Port>& local_ports,
@@ -179,6 +181,13 @@ class PluginImplTest : public testing::Test {
     ASSERT_TRUE(plugin_impl_->InitiateNetplay(&netplay_info_));
 
     ExpectNetplayInfo(default_local_ports_, default_remote_ports_);
+  }
+
+  void SetUpInputExectations() {
+    // Do you want to create a console?
+    mock_cin_ << "n" << std::endl;
+    // Enter a console ID
+    mock_cin_ << kConsoleId << std::endl;
   }
 
   static const int kDelayFrames;

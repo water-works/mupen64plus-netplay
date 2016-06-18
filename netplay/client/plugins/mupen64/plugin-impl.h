@@ -47,6 +47,9 @@ class PluginImpl {
   // Interactively create the console by communicating with the user.
   bool InteractiveConfig(int64_t* console_id, bool* created_console);
 
+  // Wait for use input to start the console.
+  bool InteractiveStartConsole(int64_t console_id);
+
   unique_ptr<ConfigHandlerInterface> config_handler_;
   unique_ptr<M64Client> client_;
   std::istream& cin_;

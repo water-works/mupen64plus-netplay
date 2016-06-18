@@ -55,6 +55,7 @@ const char NetplayClientTest::kRomName[] = "rom name";
 
 TEST_F(NetplayClientTest, Accessors) {
   EXPECT_EQ(kDelayFrames, client_->delay_frames());
+  EXPECT_EQ(mock_stub_, client_->stub());
 
   // These are set by PlugControllers.
   EXPECT_EQ(-1, client_->console_id());

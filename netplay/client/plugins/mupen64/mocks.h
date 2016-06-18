@@ -26,7 +26,7 @@ class MockConfigHandler : public ConfigHandlerInterface {
                            testing::Return(true)));
     EXPECT_CALL(*this, GetBool("Enabled"))
         .Times(testing::AnyNumber())
-        .WillOnce(testing::Return(config.enabled));
+        .WillRepeatedly(testing::Return(config.enabled));
     EXPECT_CALL(*this, GetInt("ServerPort"))
         .Times(testing::AnyNumber())
         .WillRepeatedly(testing::Return(config.server_port));

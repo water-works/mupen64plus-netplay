@@ -21,6 +21,7 @@ class NetplayClientInterface {
   virtual int64_t console_id() const = 0;
   virtual int64_t client_id() const = 0;
   virtual const std::vector<Port>& local_ports() const = 0;
+  virtual std::shared_ptr<NetPlayServerService::StubInterface> stub() const = 0;
 
   virtual TimingsPB* mutable_timings() = 0;
 
@@ -61,6 +62,10 @@ class NetplayClient : public NetplayClientInterface<ButtonsType> {
   int64_t console_id() const override { return console_id_; }
   int64_t client_id() const override { return client_id_; }
   const std::vector<Port>& local_ports() const override { return local_ports_; }
+  std::shared_ptr<NetPlayServerService::StubInterface> stub() const override {
+    return stub_;
+  }
+
   TimingsPB* mutable_timings() override { return &timings_; }
 
  protected:

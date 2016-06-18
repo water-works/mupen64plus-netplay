@@ -107,6 +107,8 @@ class MockNetplayClient : public NetplayClientInterface<ButtonsType> {
   MOCK_CONST_METHOD0_T(console_id, int64_t());
   MOCK_CONST_METHOD0_T(client_id, int64_t());
   MOCK_CONST_METHOD0_T(local_ports, const std::vector<Port> &());
+  MOCK_CONST_METHOD0_T(stub,
+                       std::shared_ptr<NetPlayServerService::StubInterface>());
   MOCK_METHOD0(mutable_timings, TimingsPB*());
 };
 
