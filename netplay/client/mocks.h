@@ -140,6 +140,9 @@ class MockCompletionQueueWrapper : public CompletionQueueWrapper {
             testing::SetArgPointee<0>(reinterpret_cast<void *>(tag)),
             testing::SetArgPointee<1>(true)));
   }
+  void NextOkVoid(void* tag) {
+    NextOk(reinterpret_cast<uint64_t>(tag));
+  }
 };
 
 #endif  // MOCKS_H_

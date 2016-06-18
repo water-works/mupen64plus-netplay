@@ -59,7 +59,7 @@ bool ExpectTag(std::unique_ptr<CompletionQueueWrapper>& cq,
   cq->Next(&tag, &ok);
   const bool success = ok && tag == expected_tag;
   if (!ok) {
-    LOG(ERROR) << "Failed to successfully get next event from stream";
+    LOG(ERROR) << "Failed to get next event from stream";
     return false;
   }
   if (tag != expected_tag) {
@@ -75,33 +75,40 @@ bool ExpectTag(std::unique_ptr<CompletionQueueWrapper>& cq,
 template <typename ButtonsType>
 void* EventStreamHandler<ButtonsType>::ClientReady() {
   stream_ = stub_->AsyncSendEvent(&stream_context_, &cq_->cq, nullptr);
-  return nullptr;
-}
-
-template <typename ButtonsType>
-bool EventStreamHandler<ButtonsType>::WaitForConsoleStart(void* tag) {
-  if (!ExpectTag(cq_, tag)) {
-    return false;
+  if (!ExpectTag(cq_, nullptr)) {
+    LOG(ERROR) << "Failed to open stream";
+    return nullptr;
   }
 
-  // Notify the server we are ready to start the game.
-  OutgoingEventPB client_ready_event;
-  ClientReadyPB* client_ready = client_ready_event.mutable_client_ready();
+  // Under the hood, the tag number is the pointer to the client ready event. 
+  // Note no one owns this pointer until WaitForConsoleStart is called with this 
+  // pointer as an argument.
+  OutgoingEventPB* client_ready_event = new OutgoingEventPB;
+  ClientReadyPB* client_ready = client_ready_event->mutable_client_ready();
   client_ready->set_console_id(console_id_);
   client_ready->set_client_id(client_id_);
 
   VLOG(3) << "Writing client ready request to stream:\n"
-          << client_ready_event.DebugString();
+          << client_ready_event->DebugString();
 
-  timings_->add_event()->set_client_ready_sync_write_start(
-      client_utils::now_nanos());
-  bool success = SyncWrite(client_ready_event);
-  timings_->add_event()->set_client_ready_sync_write_finish(
-      client_utils::now_nanos());
+  void* write_tag = reinterpret_cast<void*>(client_ready_event);
+  stream_->Write(*client_ready_event, write_tag);
+  return write_tag;
+}
 
-  if (!success) {
+template <typename ButtonsType>
+bool EventStreamHandler<ButtonsType>::WaitForConsoleStart(void* tag) {
+  if (tag == nullptr) {
+    LOG(ERROR) << "Received invalid ClientReady write tag.";
+    return false;
+  }
+
+  const std::unique_ptr<OutgoingEventPB> event(
+      reinterpret_cast<OutgoingEventPB*>(tag));
+
+  if (!ExpectTag(cq_, tag)) {
     LOG(ERROR) << "Failed to write client ready request: "
-               << client_ready_event.DebugString();
+               << event->DebugString();
     return false;
   }
 
@@ -112,7 +119,7 @@ bool EventStreamHandler<ButtonsType>::WaitForConsoleStart(void* tag) {
 
   timings_->add_event()->set_start_game_event_read_start(
       client_utils::now_nanos());
-  success = SyncRead(&start_game_event);
+  bool success = SyncRead(&start_game_event);
   timings_->add_event()->set_start_game_event_read_finish(
       client_utils::now_nanos());
 

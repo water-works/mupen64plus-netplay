@@ -60,17 +60,16 @@ class EventStreamHandlerTest : public ::testing::Test {
     EXPECT_CALL(*mock_stream_, Read(_, _))
         .WillOnce(SetArgPointee<0>(start_game_event_));
 
+    mock_cq_->NextOk(0LL);
+    void* ready_tag = handler_->ClientReady();
+
     {
       testing::InSequence seq;
-      // After stream open
-      mock_cq_->NextOk(0LL);
-      // Reads and writes
+      mock_cq_->NextOkVoid(ready_tag);
       mock_cq_->NextOk(1LL);
-      mock_cq_->NextOk(2LL);
     }
 
-    void* tag = handler_->ClientReady();
-    EXPECT_TRUE(handler_->WaitForConsoleStart(tag));
+    EXPECT_TRUE(handler_->WaitForConsoleStart(ready_tag));
   }
 
   static const int kConsoleId;
@@ -165,24 +164,22 @@ TEST_F(EventStreamHandlerTest, ReadyAndWaitForConsoleStartSuccess) {
   EXPECT_CALL(*mock_stream_, Read(_, _))
       .WillOnce(SetArgPointee<0>(start_game_event_));
 
+  mock_cq_->NextOk(0LL);
+  void* ready_tag = handler_->ClientReady();
+
   {
     testing::InSequence seq;
-    // After stream open
-    mock_cq_->NextOk(0LL);
-    // Reads and writes
+    mock_cq_->NextOkVoid(ready_tag);
     mock_cq_->NextOk(1LL);
-    mock_cq_->NextOk(2LL);
   }
 
-  ASSERT_TRUE(handler_->WaitForConsoleStart(handler_->ClientReady()));
+  ASSERT_TRUE(handler_->WaitForConsoleStart(ready_tag));
   EXPECT_THAT(handler_->local_ports(), UnorderedElementsAre(PORT_1));
   EXPECT_THAT(handler_->remote_ports(), UnorderedElementsAre(PORT_2, PORT_3));
 
-  EXPECT_EQ(4, timings_.event_size());
-  EXPECT_GT(timings_.event(0).client_ready_sync_write_start(), 0);
-  EXPECT_GT(timings_.event(1).client_ready_sync_write_finish(), 0);
-  EXPECT_GT(timings_.event(2).start_game_event_read_start(), 0);
-  EXPECT_GT(timings_.event(3).start_game_event_read_finish(), 0);
+  EXPECT_EQ(2, timings_.event_size());
+  EXPECT_GT(timings_.event(0).start_game_event_read_start(), 0);
+  EXPECT_GT(timings_.event(1).start_game_event_read_finish(), 0);
 }
 
 TEST_F(EventStreamHandlerTest, ReadyAndWaitForConsoleStartStreamOpenFailed) {
@@ -199,18 +196,13 @@ TEST_F(EventStreamHandlerTest, ReadyAndWaitForConsoleStartFailedToWriteReady) {
   // client ready message
   EXPECT_CALL(*mock_stub_, AsyncSendEventRaw(_, _, _))
       .WillOnce(Return(mock_stream_));
-
+  mock_cq_->NextOk(0LL);
   EXPECT_CALL(*mock_stream_, Write(_, _));
+  void* ready_tag = handler_->ClientReady();
 
-  {
-    testing::InSequence seq;
-    // After stream open
-    mock_cq_->NextOk(0LL);
-    // Reads and writes
-    EXPECT_CALL(*mock_cq_, Next(_, _)).WillOnce(SetArgPointee<1>(false));
-  }
+  EXPECT_CALL(*mock_cq_, Next(_, _)).WillOnce(SetArgPointee<1>(false));
 
-  ASSERT_FALSE(handler_->WaitForConsoleStart(handler_->ClientReady()));
+  ASSERT_FALSE(handler_->WaitForConsoleStart(ready_tag));
   EXPECT_THAT(handler_->local_ports(), UnorderedElementsAre(PORT_1));
   EXPECT_THAT(handler_->remote_ports(), UnorderedElementsAre());
 }
@@ -251,16 +243,16 @@ TEST_F(EventStreamHandlerTest, ReadyAndWaitForConsoleStartConsoleStopped) {
   EXPECT_CALL(*mock_stream_, Read(_, _))
       .WillOnce(SetArgPointee<0>(start_game_event_));
 
+  mock_cq_->NextOk(0LL);
+  void* ready_tag = handler_->ClientReady();
+
   {
     testing::InSequence seq;
-    // After stream open
-    mock_cq_->NextOk(0LL);
-    // Reads and writes
+    mock_cq_->NextOkVoid(ready_tag);
     mock_cq_->NextOk(1LL);
-    mock_cq_->NextOk(2LL);
   }
 
-  ASSERT_FALSE(handler_->WaitForConsoleStart(handler_->ClientReady()));
+  ASSERT_FALSE(handler_->WaitForConsoleStart(ready_tag));
   EXPECT_THAT(handler_->local_ports(), ElementsAre(PORT_1));
   EXPECT_THAT(handler_->remote_ports(), ElementsAre());
 }
@@ -275,16 +267,16 @@ TEST_F(EventStreamHandlerTest, ReadyAndWaitForConsoleStartMissingStartGame) {
   EXPECT_CALL(*mock_stream_, Read(_, _))
       .WillOnce(SetArgPointee<0>(start_game_event_));
 
+  mock_cq_->NextOk(0LL);
+  void* ready_tag = handler_->ClientReady();
+
   {
     testing::InSequence seq;
-    // After stream open
-    mock_cq_->NextOk(0LL);
-    // Reads and writes
+    mock_cq_->NextOkVoid(ready_tag);
     mock_cq_->NextOk(1LL);
-    mock_cq_->NextOk(2LL);
   }
 
-  ASSERT_FALSE(handler_->WaitForConsoleStart(handler_->ClientReady()));
+  ASSERT_FALSE(handler_->WaitForConsoleStart(ready_tag));
   EXPECT_THAT(handler_->local_ports(), ElementsAre(PORT_1));
   EXPECT_THAT(handler_->remote_ports(), ElementsAre());
 }
@@ -302,16 +294,16 @@ TEST_F(EventStreamHandlerTest, ReadyAndWaitForConsoleStartInvalidConsoleId) {
     EXPECT_CALL(*mock_stream, Read(_, _))
         .WillOnce(SetArgPointee<0>(start_game_event_negative_console_id));
 
+    mock_cq_->NextOk(0LL);
+    void* ready_tag = handler_->ClientReady();
+
     {
       testing::InSequence seq;
-      // After stream open
-      mock_cq_->NextOk(0LL);
-      // Reads and writes
+      mock_cq_->NextOkVoid(ready_tag);
       mock_cq_->NextOk(1LL);
-      mock_cq_->NextOk(2LL);
     }
 
-    ASSERT_FALSE(handler_->WaitForConsoleStart(handler_->ClientReady()));
+    ASSERT_FALSE(handler_->WaitForConsoleStart(ready_tag));
     EXPECT_THAT(handler_->local_ports(), ElementsAre(PORT_1));
     EXPECT_THAT(handler_->remote_ports(), ElementsAre());
   }
@@ -326,16 +318,16 @@ TEST_F(EventStreamHandlerTest, ReadyAndWaitForConsoleStartInvalidConsoleId) {
     EXPECT_CALL(*mock_stream, Read(_, _))
         .WillOnce(SetArgPointee<0>(start_game_event_zero_console_id));
 
+    mock_cq_->NextOk(0LL);
+    void* ready_tag = handler_->ClientReady();
+
     {
       testing::InSequence seq;
-      // After stream open
-      mock_cq_->NextOk(0LL);
-      // Reads and writes
-      mock_cq_->NextOk(3LL);
-      mock_cq_->NextOk(4LL);
+      mock_cq_->NextOkVoid(ready_tag);
+      mock_cq_->NextOk(2LL);
     }
 
-    ASSERT_FALSE(handler_->WaitForConsoleStart(handler_->ClientReady()));
+    ASSERT_FALSE(handler_->WaitForConsoleStart(ready_tag));
     EXPECT_THAT(handler_->local_ports(), ElementsAre(PORT_1));
     EXPECT_THAT(handler_->remote_ports(), ElementsAre());
   }
@@ -351,16 +343,16 @@ TEST_F(EventStreamHandlerTest, ReadyAndWaitForConsoleStartInvalidConsoleId) {
     EXPECT_CALL(*mock_stream, Read(_, _))
         .WillOnce(SetArgPointee<0>(start_game_event_unexpected_console_id));
 
+    mock_cq_->NextOk(0LL);
+    void* ready_tag = handler_->ClientReady();
+
     {
       testing::InSequence seq;
-      // After stream open
-      mock_cq_->NextOk(0LL);
-      // Reads and writes
-      mock_cq_->NextOk(5LL);
-      mock_cq_->NextOk(6LL);
+      mock_cq_->NextOkVoid(ready_tag);
+      mock_cq_->NextOk(3LL);
     }
 
-    ASSERT_FALSE(handler_->WaitForConsoleStart(handler_->ClientReady()));
+    ASSERT_FALSE(handler_->WaitForConsoleStart(ready_tag));
     EXPECT_THAT(handler_->local_ports(), ElementsAre(PORT_1));
     EXPECT_THAT(handler_->remote_ports(), ElementsAre());
   }
@@ -376,16 +368,16 @@ TEST_F(EventStreamHandlerTest, ReadyAndWaitForConsoleStartMissingLocalPort) {
   EXPECT_CALL(*mock_stream_, Read(_, _))
       .WillOnce(SetArgPointee<0>(start_game_event_));
 
+  mock_cq_->NextOk(0LL);
+  void* ready_tag = handler_->ClientReady();
+
   {
     testing::InSequence seq;
-    // After stream open
-    mock_cq_->NextOk(0LL);
-    // Reads and writes
+    mock_cq_->NextOkVoid(ready_tag);
     mock_cq_->NextOk(1LL);
-    mock_cq_->NextOk(2LL);
   }
 
-  ASSERT_FALSE(handler_->WaitForConsoleStart(handler_->ClientReady()));
+  ASSERT_FALSE(handler_->WaitForConsoleStart(ready_tag));
   EXPECT_THAT(handler_->local_ports(), ElementsAre(PORT_1));
   EXPECT_THAT(handler_->remote_ports(), ElementsAre());
 }
@@ -403,16 +395,16 @@ TEST_F(EventStreamHandlerTest, ReadyAndWaitForConsoleStartDuplicatePort) {
   EXPECT_CALL(*mock_stream_, Read(_, _))
       .WillOnce(SetArgPointee<0>(start_game_event_));
 
+  mock_cq_->NextOk(0LL);
+  void* ready_tag = handler_->ClientReady();
+
   {
     testing::InSequence seq;
-    // After stream open
-    mock_cq_->NextOk(0LL);
-    // Reads and writes
+    mock_cq_->NextOkVoid(ready_tag);
     mock_cq_->NextOk(1LL);
-    mock_cq_->NextOk(2LL);
   }
 
-  ASSERT_FALSE(handler_->WaitForConsoleStart(handler_->ClientReady()));
+  ASSERT_FALSE(handler_->WaitForConsoleStart(ready_tag));
   EXPECT_THAT(handler_->local_ports(), ElementsAre(PORT_1));
   EXPECT_THAT(handler_->remote_ports(), ElementsAre());
 }
@@ -441,16 +433,16 @@ TEST_F(EventStreamHandlerTest, ReadyAndWaitForConsoleStartTooManyPorts) {
   EXPECT_CALL(*mock_stream_, Read(_, _))
       .WillOnce(SetArgPointee<0>(start_game_event_));
 
+  mock_cq_->NextOk(0LL);
+  void* ready_tag = handler_->ClientReady();
+
   {
     testing::InSequence seq;
-    // After stream open
-    mock_cq_->NextOk(0LL);
-    // Reads and writes
+    mock_cq_->NextOkVoid(ready_tag);
     mock_cq_->NextOk(1LL);
-    mock_cq_->NextOk(2LL);
   }
 
-  ASSERT_FALSE(handler_->WaitForConsoleStart(handler_->ClientReady()));
+  ASSERT_FALSE(handler_->WaitForConsoleStart(ready_tag));
   EXPECT_THAT(handler_->local_ports(), ElementsAre(PORT_1));
   EXPECT_THAT(handler_->remote_ports(), ElementsAre());
 }
@@ -469,16 +461,16 @@ TEST_F(EventStreamHandlerTest, ReadyAndWaitForConsoleStartPortAny) {
   EXPECT_CALL(*mock_stream_, Read(_, _))
       .WillOnce(SetArgPointee<0>(start_game_event_));
 
+  mock_cq_->NextOk(0LL);
+  void* ready_tag = handler_->ClientReady();
+
   {
     testing::InSequence seq;
-    // After stream open
-    mock_cq_->NextOk(0LL);
-    // Reads and writes
+    mock_cq_->NextOkVoid(ready_tag);
     mock_cq_->NextOk(1LL);
-    mock_cq_->NextOk(2LL);
   }
 
-  ASSERT_FALSE(handler_->WaitForConsoleStart(handler_->ClientReady()));
+  ASSERT_FALSE(handler_->WaitForConsoleStart(ready_tag));
   EXPECT_THAT(handler_->local_ports(), ElementsAre(PORT_1));
   EXPECT_THAT(handler_->remote_ports(), ElementsAre());
 }
@@ -523,7 +515,7 @@ TEST_F(EventStreamHandlerTest, PutButtonsOnlyTransmitLocalPorts) {
   EXPECT_CALL(mock_coder_, EncodeButtons(port_1_data, _))
       .WillOnce(Return(true));
   EXPECT_CALL(*mock_stream_, Write(_, _));
-  mock_cq_->NextOk(3LL);
+  mock_cq_->NextOk(2LL);
 
   EXPECT_EQ(
       StringHandler::PutButtonsStatus::SUCCESS,
@@ -534,9 +526,9 @@ TEST_F(EventStreamHandlerTest, PutButtonsOnlyTransmitLocalPorts) {
   // are called.
 
   // Events 1-4 were added through StartGame().
-  EXPECT_EQ(6, timings_.event_size());
-  EXPECT_GT(timings_.event(4).key_state_sync_write_start(), 0);
-  EXPECT_GT(timings_.event(5).key_state_sync_write_finish(), 0);
+  EXPECT_EQ(4, timings_.event_size());
+  EXPECT_GT(timings_.event(2).key_state_sync_write_start(), 0);
+  EXPECT_GT(timings_.event(3).key_state_sync_write_finish(), 0);
 }
 
 TEST_F(EventStreamHandlerTest, PutButtonsDisconnectedPort) {
@@ -636,7 +628,7 @@ TEST_F(EventStreamHandlerTest, GetButtonsLocalPort) {
 
   EXPECT_CALL(mock_coder_, EncodeButtons(_, _)).WillOnce(Return(true));
   EXPECT_CALL(*mock_stream_, Write(_, _));
-  mock_cq_->NextOk(3LL);
+  mock_cq_->NextOk(2LL);
 
   ASSERT_EQ(StringHandler::PutButtonsStatus::SUCCESS,
             handler_->PutButtons({std::make_tuple(PORT_1, 0, "frame 0")}));
@@ -723,7 +715,7 @@ TEST_F(EventStreamHandlerTest, GetButtonsRemotePortReadFromStreamOneMessage) {
     keys->set_reserved_1(200);
 
     EXPECT_CALL(*mock_stream_, Read(_, _)).WillOnce(SetArgPointee<0>(event));
-    mock_cq_->NextOk(3LL);
+    mock_cq_->NextOk(2LL);
 
     EXPECT_CALL(mock_coder_,
                 DecodeButtons(Property(&KeyStatePB::reserved_1, 300), _))
@@ -743,14 +735,14 @@ TEST_F(EventStreamHandlerTest, GetButtonsRemotePortReadFromStreamOneMessage) {
             handler_->GetButtons(PORT_3, 0, &data));
   EXPECT_EQ("data 300", data);
 
-  // Events 1-4 were added through StartGame().
-  EXPECT_EQ(10, timings_.event_size());
-  EXPECT_GT(timings_.event(4).remote_key_state_requested(), 0);
-  EXPECT_GT(timings_.event(5).key_state_read_start(), 0);
-  EXPECT_GT(timings_.event(6).key_state_read_finish(), 0);
+  // Events 1 and 2 were added through StartGame().
+  EXPECT_EQ(8, timings_.event_size());
+  EXPECT_GT(timings_.event(2).remote_key_state_requested(), 0);
+  EXPECT_GT(timings_.event(3).key_state_read_start(), 0);
+  EXPECT_GT(timings_.event(4).key_state_read_finish(), 0);
+  EXPECT_GT(timings_.event(5).remote_key_state_returned(), 0);
+  EXPECT_GT(timings_.event(6).remote_key_state_requested(), 0);
   EXPECT_GT(timings_.event(7).remote_key_state_returned(), 0);
-  EXPECT_GT(timings_.event(8).remote_key_state_requested(), 0);
-  EXPECT_GT(timings_.event(9).remote_key_state_returned(), 0);
 }
 
 TEST_F(EventStreamHandlerTest, GetButtonsRemotePortNonButtonMessage) {
@@ -767,7 +759,7 @@ TEST_F(EventStreamHandlerTest, GetButtonsRemotePortNonButtonMessage) {
   event.add_invalid_data();
 
   EXPECT_CALL(*mock_stream_, Read(_, _)).WillOnce(SetArgPointee<0>(event));
-  mock_cq_->NextOk(3LL);
+  mock_cq_->NextOk(2LL);
 
   string data;
   ASSERT_EQ(StringHandler::GetButtonsStatus::FAILURE,
@@ -782,7 +774,7 @@ TEST_F(EventStreamHandlerTest, GetButtonsRemotePortConsoleStopped) {
   event.mutable_stop_console()->set_stop_reason(StopConsolePB::ERROR);
 
   EXPECT_CALL(*mock_stream_, Read(_, _)).WillOnce(SetArgPointee<0>(event));
-  mock_cq_->NextOk(3LL);
+  mock_cq_->NextOk(2LL);
 
   string data;
   ASSERT_EQ(StringHandler::GetButtonsStatus::FAILURE,
@@ -811,7 +803,7 @@ TEST_F(EventStreamHandlerTest, GetButtonsRemotePortDisconnectedPort) {
   keys->set_frame_number(0);
 
   EXPECT_CALL(*mock_stream_, Read(_, _)).WillOnce(SetArgPointee<0>(event));
-  mock_cq_->NextOk(3LL);
+  mock_cq_->NextOk(2LL);
 
   string data;
   ASSERT_EQ(StringHandler::GetButtonsStatus::FAILURE,
@@ -830,7 +822,7 @@ TEST_F(EventStreamHandlerTest, GetButtonsRemotePortDecodeFailure) {
   keys->set_reserved_1(300);
 
   EXPECT_CALL(*mock_stream_, Read(_, _)).WillOnce(SetArgPointee<0>(event));
-  mock_cq_->NextOk(3LL);
+  mock_cq_->NextOk(2LL);
 
   EXPECT_CALL(mock_coder_,
               DecodeButtons(Property(&KeyStatePB::reserved_1, 300), _))
@@ -853,7 +845,7 @@ TEST_F(EventStreamHandlerTest, GetButtonsRemotePortRejectedByQueue) {
   keys->set_reserved_1(300);
 
   EXPECT_CALL(*mock_stream_, Read(_, _)).WillOnce(SetArgPointee<0>(event));
-  mock_cq_->NextOk(3LL);
+  mock_cq_->NextOk(2LL);
 
   EXPECT_CALL(mock_coder_,
               DecodeButtons(Property(&KeyStatePB::reserved_1, 300), _))
