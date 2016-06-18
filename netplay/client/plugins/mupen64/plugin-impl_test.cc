@@ -162,9 +162,8 @@ class PluginImplTest : public testing::Test {
             Return(mock_stream_handler_ = new StrictMockEventStreamHandler()));
 
     void* tag = reinterpret_cast<void*>(999LL);
-    EXPECT_CALL(*mock_stream_handler_, ClientReady())
-        .WillOnce(Return(reinterpret_cast<void*>(tag)));
-    EXPECT_CALL(*mock_stream_handler_, WaitForConsoleStart(tag))
+    EXPECT_CALL(*mock_stream_handler_, ClientReady()).WillOnce(Return(true));
+    EXPECT_CALL(*mock_stream_handler_, WaitForConsoleStart())
         .WillOnce(Return(true));
     EXPECT_CALL(*mock_stream_handler_, local_ports())
         .WillOnce(Return(set<Port>(default_local_ports_)));
@@ -239,10 +238,8 @@ TEST_F(PluginImplTest, InitiateNetplaySuccessSpecificPorts) {
   const set<Port> local_ports({PORT_1, PORT_4});
   const set<Port> remote_ports({PORT_2});
 
-  void* tag = reinterpret_cast<void*>(999LL);
-  EXPECT_CALL(*mock_stream_handler_, ClientReady())
-      .WillOnce(Return(reinterpret_cast<void*>(tag)));
-  EXPECT_CALL(*mock_stream_handler_, WaitForConsoleStart(tag))
+  EXPECT_CALL(*mock_stream_handler_, ClientReady()).WillOnce(Return(true));
+  EXPECT_CALL(*mock_stream_handler_, WaitForConsoleStart())
       .WillOnce(Return(true));
   EXPECT_CALL(*mock_stream_handler_, local_ports())
       .WillOnce(Return(set<Port>(local_ports)));
@@ -280,10 +277,8 @@ TEST_F(PluginImplTest, InitiateNetplaySuccessAnyPorts) {
   const set<Port> local_ports({PORT_1, PORT_4});
   const set<Port> remote_ports({PORT_2});
 
-  void* tag = reinterpret_cast<void*>(999LL);
-  EXPECT_CALL(*mock_stream_handler_, ClientReady())
-      .WillOnce(Return(reinterpret_cast<void*>(tag)));
-  EXPECT_CALL(*mock_stream_handler_, WaitForConsoleStart(tag))
+  EXPECT_CALL(*mock_stream_handler_, ClientReady()).WillOnce(Return(true));
+  EXPECT_CALL(*mock_stream_handler_, WaitForConsoleStart())
       .WillOnce(Return(true));
   EXPECT_CALL(*mock_stream_handler_, local_ports())
       .WillOnce(Return(set<Port>(local_ports)));
@@ -334,10 +329,8 @@ TEST_F(PluginImplTest, InitiateNetplayMoreLocalPortsThanInputChannels) {
   const set<Port> local_ports({PORT_1, PORT_3, PORT_4});
   const set<Port> remote_ports({PORT_2});
 
-  void* tag = reinterpret_cast<void*>(999LL);
-  EXPECT_CALL(*mock_stream_handler_, ClientReady())
-      .WillOnce(Return(reinterpret_cast<void*>(tag)));
-  EXPECT_CALL(*mock_stream_handler_, WaitForConsoleStart(tag))
+  EXPECT_CALL(*mock_stream_handler_, ClientReady()).WillOnce(Return(true));
+  EXPECT_CALL(*mock_stream_handler_, WaitForConsoleStart())
       .WillOnce(Return(true));
   EXPECT_CALL(*mock_stream_handler_, local_ports())
       .Times(AtMost(1))
@@ -371,9 +364,8 @@ TEST_F(PluginImplTest, InitiateNetplayMoreInputChannelsThanLocalPorts) {
   const set<Port> remote_ports({PORT_2});
 
   void* tag = reinterpret_cast<void*>(999LL);
-  EXPECT_CALL(*mock_stream_handler_, ClientReady())
-      .WillOnce(Return(reinterpret_cast<void*>(tag)));
-  EXPECT_CALL(*mock_stream_handler_, WaitForConsoleStart(tag))
+  EXPECT_CALL(*mock_stream_handler_, ClientReady()).WillOnce(Return(true));
+  EXPECT_CALL(*mock_stream_handler_, WaitForConsoleStart())
       .WillOnce(Return(true));
   EXPECT_CALL(*mock_stream_handler_, local_ports())
       .Times(AtMost(1))
@@ -420,9 +412,8 @@ TEST_F(PluginImplTest, InitiateNetplayFailToWaitForGameStartFails) {
           Return(mock_stream_handler_ = new StrictMockEventStreamHandler()));
 
   void* tag = reinterpret_cast<void*>(999LL);
-  EXPECT_CALL(*mock_stream_handler_, ClientReady())
-      .WillOnce(Return(reinterpret_cast<void*>(tag)));
-  EXPECT_CALL(*mock_stream_handler_, WaitForConsoleStart(tag))
+  EXPECT_CALL(*mock_stream_handler_, ClientReady()).WillOnce(Return(true));
+  EXPECT_CALL(*mock_stream_handler_, WaitForConsoleStart())
       .WillOnce(Return(false));
 
   EXPECT_FALSE(plugin_impl_->InitiateNetplay(&netplay_info_));

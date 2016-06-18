@@ -90,7 +90,5 @@ template <typename ButtonsType>
 EventStreamHandlerInterface<ButtonsType>*
 NetplayClient<ButtonsType>::MakeEventStreamHandlerRaw() {
   return new EventStreamHandler<ButtonsType>(
-      console_id_, client_id_, local_ports_, &timings_, coder_.get(),
-      std::unique_ptr<CompletionQueueWrapper>(new CompletionQueueWrapper()),
-      stub_);
+      console_id_, client_id_, local_ports_, &timings_, coder_.get(), stub_);
 }

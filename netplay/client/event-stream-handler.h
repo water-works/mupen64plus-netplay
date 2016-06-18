@@ -12,16 +12,6 @@
 #include "client/button-coder-interface.h"
 #include "client/input-queue.h"
 
-// Thin, mockable wrapper around the completion queue.
-class CompletionQueueWrapper {
- public:
-  virtual ~CompletionQueueWrapper() {}
-  virtual void Next(void** tag, bool* ok) { cq.Next(tag, ok); }
-  // Note this will be accessed directly by the stream handler for both real and
-  // mock instance of this class.
-  grpc::CompletionQueue cq;
-};
-
 template <typename ButtonsType>
 class EventStreamHandlerInterface {
  public:
@@ -74,8 +64,8 @@ class EventStreamHandlerInterface {
   };
 
   virtual HandlerStatus status() const = 0;
-  virtual void* ClientReady() = 0;
-  virtual bool WaitForConsoleStart(void*) = 0;
+  virtual bool ClientReady() = 0;
+  virtual bool WaitForConsoleStart() = 0;
   virtual GetButtonsStatus GetButtons(const Port port, int frame,
                                       ButtonsType* buttons) = 0;
   virtual PutButtonsStatus PutButtons(
@@ -92,8 +82,8 @@ class EventStreamHandlerInterface {
 template <typename ButtonsType>
 class EventStreamHandler : public EventStreamHandlerInterface<ButtonsType> {
  public:
-  typedef grpc::ClientAsyncReaderWriterInterface<
-      OutgoingEventPB, IncomingEventPB> BidirectionalStream;
+  typedef grpc::ClientReaderWriterInterface<OutgoingEventPB, IncomingEventPB>
+      BidirectionalStream;
   typedef typename EventStreamHandlerInterface<ButtonsType>::HandlerStatus
       HandlerStatus;
 
@@ -110,20 +100,16 @@ class EventStreamHandler : public EventStreamHandlerInterface<ButtonsType> {
   EventStreamHandler(int console_id, int client_id,
                      const std::vector<Port> local_ports, TimingsPB* timings,
                      const ButtonCoderInterface<ButtonsType>* coder,
-                     std::unique_ptr<CompletionQueueWrapper> cq,
                      std::shared_ptr<NetPlayServerService::StubInterface> stub);
 
   HandlerStatus status() const override {
     return status_;
   }
 
-  // Signal that the client is ready. The returned value is meant to be passed
-  // to WaitForConsoleStart.
-  void* ClientReady();
-
-  // Block until we receive a console start event from the server. Returns true
-  // if and only if the game was successfully started.
-  bool WaitForConsoleStart(void*);
+  // Signal to the server that we are ready to start the game and wait until
+  // the server indicates the console has started.
+  bool ClientReady() override;
+  bool WaitForConsoleStart() override;
 
   // Send the given buttons to the server.
   typedef typename EventStreamHandlerInterface<ButtonsType>::PutButtonsStatus
@@ -202,11 +188,6 @@ class EventStreamHandler : public EventStreamHandlerInterface<ButtonsType> {
   // for the given port.
   ButtonsInputQueue* GetQueue(const Port port);
 
-  // Emulate synchronous read and write operations on the async stream.
-  uint64_t stream_op_num_ = 0;
-  bool SyncWrite(const OutgoingEventPB& event);
-  bool SyncRead(IncomingEventPB* event);
-
   const int console_id_;
   const int client_id_;
   std::set<Port> local_ports_;
@@ -214,7 +195,6 @@ class EventStreamHandler : public EventStreamHandlerInterface<ButtonsType> {
   // Borrowed reference
   const ButtonCoderInterface<ButtonsType>& coder_;
   std::shared_ptr<NetPlayServerService::StubInterface> stub_;
-  std::unique_ptr<CompletionQueueWrapper> cq_;
   grpc::ClientContext stream_context_;
   std::unique_ptr<BidirectionalStream> stream_;
 

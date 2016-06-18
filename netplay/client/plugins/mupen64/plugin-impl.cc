@@ -84,14 +84,18 @@ int PluginImpl::InitiateNetplay(NETPLAY_INFO* netplay_info) {
   VLOG(3)
       << "Indicating the netplay plugin is ready and waiting for console start";
 
-  void* tag = stream_handler_->ClientReady();
+  if (!stream_handler_->ClientReady()) {
+    LOG(ERROR) << "Failed to make client as ready.";
+    return 0;
+  }
+
   if (created_new_console && !InteractiveStartConsole(new_console_id)) {
     // Error already logged
     return 0;
   }
 
   cout_ << "Waiting for the console to start..." << std::endl;
-  if (!stream_handler_->WaitForConsoleStart(tag)) {
+  if (!stream_handler_->WaitForConsoleStart()) {
     LOG(ERROR) << "Failed waiting for the game to start.";
     return 0;
   }
@@ -223,6 +227,8 @@ bool ReadBool(const string& prompt, std::istream& cin, std::ostream& cout,
     string str;
     cout << std::endl << prompt;
     cin >> str;
+    // Ignore the newline
+    cin.ignore();
 
     if (!cin.good()) {
       return false;
@@ -243,6 +249,8 @@ bool ReadInt64(const string& prompt, std::istream& cin, std::ostream& cout,
   while (true) {
     cout << std::endl << prompt;
     cin >> *console_id;
+    // Ignore the newline
+    cin.ignore();
     return cin.good();
   }
 }
