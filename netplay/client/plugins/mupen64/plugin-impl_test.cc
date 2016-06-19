@@ -153,9 +153,9 @@ class PluginImplTest : public testing::Test {
 
   // Initiate netplay with default values.
   void InitiateNetplayDefault() {
-    EXPECT_CALL(
-        *mock_client_,
-        PlugControllers(kConsoleId, UnorderedElementsAre(PORT_1, PORT_3), _))
+    EXPECT_CALL(*mock_client_,
+                PlugControllers(kConsoleId, kRomMd5,
+                                UnorderedElementsAre(PORT_1, PORT_3), _))
         .WillOnce(Return(true));
     EXPECT_CALL(*mock_client_, MakeEventStreamHandlerRaw())
         .WillOnce(
@@ -177,7 +177,8 @@ class PluginImplTest : public testing::Test {
     EXPECT_CALL(*mock_stream_handler_, DelayFramesForPort(PORT_2))
         .WillOnce(Return(0));
 
-    ASSERT_TRUE(plugin_impl_->InitiateNetplay(&netplay_info_));
+    ASSERT_TRUE(
+        plugin_impl_->InitiateNetplay(&netplay_info_, kRomName, kRomMd5));
 
     ExpectNetplayInfo(default_local_ports_, default_remote_ports_);
   }
@@ -191,6 +192,8 @@ class PluginImplTest : public testing::Test {
 
   static const int kDelayFrames;
   static const int kConsoleId;
+  static const char kRomName[];
+  static const char kRomMd5[];
 
   std::stringstream mock_cin_;
   std::stringstream mock_cout_;
@@ -216,6 +219,8 @@ class PluginImplTest : public testing::Test {
 
 const int PluginImplTest::kDelayFrames = 3;
 const int PluginImplTest::kConsoleId = 3;
+const char PluginImplTest::kRomName[] = "Rom Name";
+const char PluginImplTest::kRomMd5[] = "12345678901234567890123456789012";
 
 // -----------------------------------------------------------------------------
 // InitiateNetplay
@@ -227,9 +232,9 @@ TEST_F(PluginImplTest, InitiateNetplaySuccessSpecificPorts) {
        UNKNOWN,  // Port 4 request
        {0, 2});
 
-  EXPECT_CALL(
-      *mock_client_,
-      PlugControllers(kConsoleId, UnorderedElementsAre(PORT_1, PORT_3), _))
+  EXPECT_CALL(*mock_client_,
+              PlugControllers(kConsoleId, kRomMd5,
+                              UnorderedElementsAre(PORT_1, PORT_3), _))
       .WillOnce(Return(true));
   EXPECT_CALL(*mock_client_, MakeEventStreamHandlerRaw())
       .WillOnce(
@@ -254,7 +259,7 @@ TEST_F(PluginImplTest, InitiateNetplaySuccessSpecificPorts) {
   EXPECT_CALL(*mock_stream_handler_, DelayFramesForPort(PORT_2))
       .WillOnce(Return(0));
 
-  ASSERT_TRUE(plugin_impl_->InitiateNetplay(&netplay_info_));
+  ASSERT_TRUE(plugin_impl_->InitiateNetplay(&netplay_info_, kRomName, kRomMd5));
 
   ExpectNetplayInfo(local_ports, remote_ports);
 }
@@ -266,9 +271,9 @@ TEST_F(PluginImplTest, InitiateNetplaySuccessAnyPorts) {
        UNKNOWN,   // Port 4 request
        {0, 2});
 
-  EXPECT_CALL(
-      *mock_client_,
-      PlugControllers(kConsoleId, UnorderedElementsAre(PORT_ANY, PORT_ANY), _))
+  EXPECT_CALL(*mock_client_,
+              PlugControllers(kConsoleId, kRomMd5,
+                              UnorderedElementsAre(PORT_ANY, PORT_ANY), _))
       .WillOnce(Return(true));
   EXPECT_CALL(*mock_client_, MakeEventStreamHandlerRaw())
       .WillOnce(
@@ -293,7 +298,7 @@ TEST_F(PluginImplTest, InitiateNetplaySuccessAnyPorts) {
   EXPECT_CALL(*mock_stream_handler_, DelayFramesForPort(PORT_2))
       .WillOnce(Return(0));
 
-  ASSERT_TRUE(plugin_impl_->InitiateNetplay(&netplay_info_));
+  ASSERT_TRUE(plugin_impl_->InitiateNetplay(&netplay_info_, kRomName, kRomMd5));
 
   ExpectNetplayInfo(local_ports, remote_ports);
 }
@@ -307,7 +312,8 @@ TEST_F(PluginImplTest, InitiateNetplayControllerWithRawData) {
 
   controls_[0].RawData = 1;
 
-  ASSERT_FALSE(plugin_impl_->InitiateNetplay(&netplay_info_));
+  ASSERT_FALSE(
+      plugin_impl_->InitiateNetplay(&netplay_info_, kRomName, kRomMd5));
   ExpectUnitializedNetplayInfo(true /* enabled */);
 }
 
@@ -318,9 +324,9 @@ TEST_F(PluginImplTest, InitiateNetplayMoreLocalPortsThanInputChannels) {
        UNKNOWN,   // Port 4 request
        {0, 2});
 
-  EXPECT_CALL(
-      *mock_client_,
-      PlugControllers(kConsoleId, UnorderedElementsAre(PORT_ANY, PORT_ANY), _))
+  EXPECT_CALL(*mock_client_,
+              PlugControllers(kConsoleId, kRomMd5,
+                              UnorderedElementsAre(PORT_ANY, PORT_ANY), _))
       .WillOnce(Return(true));
   EXPECT_CALL(*mock_client_, MakeEventStreamHandlerRaw())
       .WillOnce(
@@ -339,7 +345,8 @@ TEST_F(PluginImplTest, InitiateNetplayMoreLocalPortsThanInputChannels) {
       .Times(AtMost(1))
       .WillOnce(Return(set<Port>(remote_ports)));
 
-  EXPECT_FALSE(plugin_impl_->InitiateNetplay(&netplay_info_));
+  EXPECT_FALSE(
+      plugin_impl_->InitiateNetplay(&netplay_info_, kRomName, kRomMd5));
 
   ExpectUnitializedNetplayInfo(true);
 }
@@ -353,7 +360,7 @@ TEST_F(PluginImplTest, InitiateNetplayMoreInputChannelsThanLocalPorts) {
 
   EXPECT_CALL(
       *mock_client_,
-      PlugControllers(kConsoleId,
+      PlugControllers(kConsoleId, kRomMd5,
                       UnorderedElementsAre(PORT_ANY, PORT_ANY, PORT_ANY), _))
       .WillOnce(Return(true));
   EXPECT_CALL(*mock_client_, MakeEventStreamHandlerRaw())
@@ -374,7 +381,8 @@ TEST_F(PluginImplTest, InitiateNetplayMoreInputChannelsThanLocalPorts) {
       .Times(AtMost(1))
       .WillOnce(Return(set<Port>(remote_ports)));
 
-  EXPECT_FALSE(plugin_impl_->InitiateNetplay(&netplay_info_));
+  EXPECT_FALSE(
+      plugin_impl_->InitiateNetplay(&netplay_info_, kRomName, kRomMd5));
 
   ExpectUnitializedNetplayInfo(true);
 }
@@ -386,12 +394,13 @@ TEST_F(PluginImplTest, InitiateNetplayPlugControllersFails) {
        UNKNOWN,   // Port 4 request
        {0, 3});
 
-  EXPECT_CALL(
-      *mock_client_,
-      PlugControllers(kConsoleId, UnorderedElementsAre(PORT_ANY, PORT_ANY), _))
+  EXPECT_CALL(*mock_client_,
+              PlugControllers(kConsoleId, kRomMd5,
+                              UnorderedElementsAre(PORT_ANY, PORT_ANY), _))
       .WillOnce(Return(false));
 
-  EXPECT_FALSE(plugin_impl_->InitiateNetplay(&netplay_info_));
+  EXPECT_FALSE(
+      plugin_impl_->InitiateNetplay(&netplay_info_, kRomName, kRomMd5));
 
   ExpectUnitializedNetplayInfo(true);
 }
@@ -403,9 +412,9 @@ TEST_F(PluginImplTest, InitiateNetplayFailToWaitForGameStartFails) {
        UNKNOWN,   // Port 4 request
        {0, 3});
 
-  EXPECT_CALL(
-      *mock_client_,
-      PlugControllers(kConsoleId, UnorderedElementsAre(PORT_ANY, PORT_ANY), _))
+  EXPECT_CALL(*mock_client_,
+              PlugControllers(kConsoleId, kRomMd5,
+                              UnorderedElementsAre(PORT_ANY, PORT_ANY), _))
       .WillOnce(Return(true));
   EXPECT_CALL(*mock_client_, MakeEventStreamHandlerRaw())
       .WillOnce(
@@ -416,7 +425,8 @@ TEST_F(PluginImplTest, InitiateNetplayFailToWaitForGameStartFails) {
   EXPECT_CALL(*mock_stream_handler_, WaitForConsoleStart())
       .WillOnce(Return(false));
 
-  EXPECT_FALSE(plugin_impl_->InitiateNetplay(&netplay_info_));
+  EXPECT_FALSE(
+      plugin_impl_->InitiateNetplay(&netplay_info_, kRomName, kRomMd5));
 
   ExpectUnitializedNetplayInfo(true);
 }
@@ -429,7 +439,7 @@ TEST_F(PluginImplTest, InitiateNetplayNetplayDisabled) {
        {0, 3},
        false);  // enabled
 
-  EXPECT_TRUE(plugin_impl_->InitiateNetplay(&netplay_info_));
+  EXPECT_TRUE(plugin_impl_->InitiateNetplay(&netplay_info_, kRomName, kRomMd5));
 
   ExpectUnitializedNetplayInfo(false);
 }

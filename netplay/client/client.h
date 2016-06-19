@@ -14,7 +14,7 @@ template <typename ButtonsType>
 class NetplayClientInterface {
  public:
   virtual ~NetplayClientInterface() {}
-  virtual bool PlugControllers(int64_t console_id,
+  virtual bool PlugControllers(int64_t console_id, const std::string& rom_md5,
                                const std::vector<Port>& ports,
                                PlugControllerResponsePB::Status* status) = 0;
   virtual int delay_frames() const = 0;
@@ -54,7 +54,8 @@ class NetplayClient : public NetplayClientInterface<ButtonsType> {
   // Request that the given ports be plugged into the server's virtual console.
   // Returns the resulting status code returned from the server for this
   // request.
-  bool PlugControllers(int64_t console_id, const std::vector<Port>& ports,
+  bool PlugControllers(int64_t console_id, const std::string& rom_md5,
+                       const std::vector<Port>& ports,
                        PlugControllerResponsePB::Status* status) override;
 
   // Accessors

@@ -18,7 +18,9 @@ const char PluginImpl::kPluginName[] = "NoNameNetplay";
 // -----------------------------------------------------------------------------
 // InitiateNetplay
 
-int PluginImpl::InitiateNetplay(NETPLAY_INFO* netplay_info) {
+int PluginImpl::InitiateNetplay(NETPLAY_INFO* netplay_info,
+                                const std::string& goodname,
+                                const char md5[33]) {
   // Initalize the netplay structs to default values.
   for (int i = 0; i < 4; ++i) {
     NETPLAY_CONTROLLER* controller = &netplay_info->NetplayControls[i];
@@ -48,7 +50,8 @@ int PluginImpl::InitiateNetplay(NETPLAY_INFO* netplay_info) {
 
   int64_t new_console_id;
   bool created_new_console;
-  if (!InteractiveConfig(&new_console_id, &created_new_console)) {
+  if (!InteractiveConfig(goodname, md5, &new_console_id,
+                         &created_new_console)) {
     // Error already logged
     return 0;
   }
@@ -73,7 +76,8 @@ int PluginImpl::InitiateNetplay(NETPLAY_INFO* netplay_info) {
   // Request ports
   PlugControllerResponsePB::Status status;
   VLOG(3) << "Requesting found ports";
-  if (!client_->PlugControllers(new_console_id, requested_ports, &status)) {
+  if (!client_->PlugControllers(new_console_id, md5, requested_ports,
+                                &status)) {
     LOG(ERROR) << "PlugControllers returned bad status: "
                << PlugControllerResponsePB::Status_Name(status);
     return 0;
@@ -257,7 +261,9 @@ bool ReadInt64(const string& prompt, std::istream& cin, std::ostream& cout,
 
 }  // namespace
 
-bool PluginImpl::InteractiveConfig(int64_t* console_id, bool* created_console) {
+bool PluginImpl::InteractiveConfig(const std::string& goodname,
+                                   const std::string& md5, int64_t* console_id,
+                                   bool* created_console) {
   using std::endl;
 
   *console_id = M64Config::FromConfigHandler(*config_handler_).console_id;
@@ -275,8 +281,8 @@ bool PluginImpl::InteractiveConfig(int64_t* console_id, bool* created_console) {
   if (*created_console) {
     int console_id_int;
     MakeConsoleResponsePB::Status status = MakeConsoleResponsePB::UNKNOWN;
-    if (!host_utils::MakeConsole("dummy-console", "dummy-rom", client_->stub(),
-                                 &status, &console_id_int)) {
+    if (!host_utils::MakeConsole(goodname, md5, client_->stub(), &status,
+                                 &console_id_int)) {
       LOG(ERROR) << "Failed to create a new console with status "
                  << MakeConsoleResponsePB::Status_Name(status);
       return false;

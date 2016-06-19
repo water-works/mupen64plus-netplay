@@ -96,9 +96,10 @@ class MockButtonCoder : public ButtonCoderInterface<ButtonsType> {
 template <typename ButtonsType>
 class MockNetplayClient : public NetplayClientInterface<ButtonsType> {
  public:
-  MOCK_METHOD3_T(PlugControllers,
-		 bool(int64_t console_id, const std::vector<Port> &ports,
-		      PlugControllerResponsePB::Status *status));
+  MOCK_METHOD4_T(PlugControllers,
+                 bool(int64_t console_id, const std::string &rom_md5,
+                      const std::vector<Port> &ports,
+                      PlugControllerResponsePB::Status *status));
   MOCK_METHOD0_T(MakeEventStreamHandlerRaw,
 		 EventStreamHandlerInterface<ButtonsType> *());
   MOCK_CONST_METHOD0_T(delay_frames, int());

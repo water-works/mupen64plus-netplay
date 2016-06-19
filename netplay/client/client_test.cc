@@ -31,6 +31,7 @@ class NetplayClientTest : public ::testing::Test {
   typedef NetplayClient<string> StringClient;
 
   static const int kConsoleId;
+  static const char kRomMD5[];
   static const int kClientId;
   static const int kDelayFrames;
   static const char kConsoleTitle[];
@@ -48,6 +49,7 @@ class NetplayClientTest : public ::testing::Test {
 };
 
 const int NetplayClientTest::kConsoleId = 101;
+const char NetplayClientTest::kRomMD5[] = "abcdefg1234567";
 const int NetplayClientTest::kClientId = 1001;
 const int NetplayClientTest::kDelayFrames = 5;
 const char NetplayClientTest::kConsoleTitle[] = "console title";
@@ -154,7 +156,7 @@ TEST_F(NetplayClientTest, PlugControllerSuccess) {
 
     PlugControllerResponsePB::Status status =
         PlugControllerResponsePB::UNSPECIFIED_FAILURE;
-    ASSERT_TRUE(client_->PlugControllers(kConsoleId, ports, &status));
+    ASSERT_TRUE(client_->PlugControllers(kConsoleId, kRomMD5, ports, &status));
     ASSERT_EQ(status, PlugControllerResponsePB::SUCCESS);
     EXPECT_EQ(kClientId, client_->client_id());
   }
@@ -181,7 +183,7 @@ TEST_F(NetplayClientTest, PlugControllerEmptyPorts) {
 
   PlugControllerResponsePB::Status status =
       PlugControllerResponsePB::UNSPECIFIED_FAILURE;
-  EXPECT_FALSE(client_->PlugControllers(kConsoleId, {}, &status));
+  EXPECT_FALSE(client_->PlugControllers(kConsoleId, kRomMD5, {}, &status));
 }
 
 TEST_F(NetplayClientTest, PlugControllerMismatchedConsoleId) {
@@ -193,7 +195,8 @@ TEST_F(NetplayClientTest, PlugControllerMismatchedConsoleId) {
 
   PlugControllerResponsePB::Status status =
       PlugControllerResponsePB::UNSPECIFIED_FAILURE;
-  EXPECT_FALSE(client_->PlugControllers(kConsoleId, {PORT_1}, &status));
+  EXPECT_FALSE(
+      client_->PlugControllers(kConsoleId, kRomMD5, {PORT_1}, &status));
 }
 
 TEST_F(NetplayClientTest, PlugControllerRPCFailure) {
@@ -202,5 +205,6 @@ TEST_F(NetplayClientTest, PlugControllerRPCFailure) {
 
   PlugControllerResponsePB::Status status =
       PlugControllerResponsePB::UNSPECIFIED_FAILURE;
-  EXPECT_FALSE(client_->PlugControllers(kConsoleId, {PORT_1}, &status));
+  EXPECT_FALSE(
+      client_->PlugControllers(kConsoleId, kRomMD5, {PORT_1}, &status));
 }

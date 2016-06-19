@@ -38,7 +38,8 @@ EXPORT m64p_error CALL PluginGetVersion(m64p_plugin_type *plugin_type,
 // Loads configuration data and connects to the server.
 EXPORT int CALL RomOpen(void);
 
-EXPORT int CALL InitiateNetplay(NETPLAY_INFO* netplay_info);
+EXPORT int CALL InitiateNetplay(NETPLAY_INFO *netplay_info,
+                                const char *goodname, const char *md5);
 
 EXPORT void CALL RomClosed(void);
 EXPORT

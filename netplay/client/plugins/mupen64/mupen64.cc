@@ -16,6 +16,7 @@
 #include "grpc++/security/credentials.h"
 
 #include "m64p_config.h"
+#include "m64p_types.h"
 
 // -----------------------------------------------------------------------------
 // Global state
@@ -66,8 +67,11 @@ EXPORT m64p_error CALL PluginGetVersion(m64p_plugin_type *plugin_type,
 // -----------------------------------------------------------------------------
 // InitiateNetplay
 
-EXPORT int CALL InitiateNetplay(NETPLAY_INFO *netplay_info) {
+EXPORT int CALL InitiateNetplay(NETPLAY_INFO *netplay_info,
+                                const char *goodname, const char md5[33]) {
   VLOG(2) << "Calling InitiateNetplay";
+
+  LOG(INFO) << "ROM goodname: " << goodname;
 
   std::unique_ptr<ConfigHandlerInterface> config_handler =
       ConfigHandler::MakeConfigHandler(l_CoreLibHandle, "Netplay");
@@ -94,7 +98,7 @@ EXPORT int CALL InitiateNetplay(NETPLAY_INFO *netplay_info) {
   l_PluginImpl.reset(new PluginImpl(config_handler.release(), &std::cin,
                                     &std::cout, std::move(client)));
 
-  return l_PluginImpl->InitiateNetplay(netplay_info);
+  return l_PluginImpl->InitiateNetplay(netplay_info, goodname, md5);
 }
 
 // -----------------------------------------------------------------------------

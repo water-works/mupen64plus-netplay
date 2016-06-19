@@ -28,7 +28,8 @@ class PluginImpl {
 
   // Request the ports specified in the configuration and update netplay_info 
   // accordingly.
-  int InitiateNetplay(NETPLAY_INFO* netplay_info);
+  int InitiateNetplay(NETPLAY_INFO* netplay_info, const std::string& goodname,
+                      const char md5[33]);
 
   // Places local buttons into the respective queue and transmits them over the 
   // network.
@@ -45,7 +46,8 @@ class PluginImpl {
                                  NETPLAY_INFO* netplay_info);
 
   // Interactively create the console by communicating with the user.
-  bool InteractiveConfig(int64_t* console_id, bool* created_console);
+  bool InteractiveConfig(const std::string& goodname, const std::string& md5,
+                         int64_t* console_id, bool* created_console);
 
   // Wait for use input to start the console.
   bool InteractiveStartConsole(int64_t console_id);

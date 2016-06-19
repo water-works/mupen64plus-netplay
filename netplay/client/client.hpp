@@ -21,11 +21,13 @@ NetplayClient<ButtonsType>::NetplayClient(
 
 template <typename ButtonsType>
 bool NetplayClient<ButtonsType>::PlugControllers(
-    int64_t console_id, const std::vector<Port>& local_ports,
+    int64_t console_id, const std::string& rom_md5,
+    const std::vector<Port>& local_ports,
     PlugControllerResponsePB::Status* status) {
   PlugControllerRequestPB request;
   request.set_console_id(console_id);
   request.set_delay_frames(delay_frames_);
+  request.set_rom_file_md5(rom_md5);
 
   // Populate all the requested local_ports, and return false if the size is not
   // in
