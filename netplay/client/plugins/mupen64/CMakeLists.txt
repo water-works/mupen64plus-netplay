@@ -10,10 +10,11 @@ ADD_LIBRARY (Util util.cc)
 SET (
   M64_PLUGIN_LIBS 
   Coder
+  PluginImpl
   ConfigHandler
   OsalDynamicLib
-  PluginImpl
-  Util)
+  Util
+  ${CMAKE_DL_LIBS})
 
 # ------------------------------------------------------------------------------
 # Tests
