@@ -6,7 +6,7 @@ then
   echo "Usage: $0 [path to m64p bundle] [ROM file]"
   echo
   echo "You can download a mupen64plus bundle from the mupen64plus-core"
-  echo "releases page: https://github.com/mupen64plus/mupen64plus-core"
+  echo "releases page: https://github.com/mupen64plus/mupen64plus-core/releases"
   echo
   echo "Note this script assumes it's being run from the root of a fully-built"
   echo "mupen64plus-netplay repository."
