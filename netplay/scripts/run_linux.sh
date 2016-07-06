@@ -33,5 +33,5 @@ cp $M64P_CONFIG_TEMPLATE $M64P_CONFIG_DATADIR/mupen64plus.cfg
     --audio $M64P_BUNDLE_ROOT/mupen64plus-audio-sdl.so \
     --input $M64P_BUNDLE_ROOT/mupen64plus-input-sdl.so \
     --rsp $M64P_BUNDLE_ROOT/mupen64plus-rsp-hle.so \
-    --netplay netplay/build/lib/libMupen64Plugin.so \
+    --netplay netplay/build/lib/mupen64plus-netplay.so \
     $ROM_FILE

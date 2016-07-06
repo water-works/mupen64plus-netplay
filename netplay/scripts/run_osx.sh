@@ -32,5 +32,5 @@ DYLD_FALLBACK_LIBRARY_PATH=./usr/lib:$M64P_BUNDLE_ROOT/libs:$DYLD_FALLBACK_LIBRA
   --audio $M64P_BUNDLE_ROOT/MacOS/mupen64plus-audio-sdl.dylib \
   --input $M64P_BUNDLE_ROOT/MacOS/mupen64plus-input-sdl.dylib \
   --rsp $M64P_BUNDLE_ROOT/MacOS/mupen64plus-rsp-hle.dylib \
-  --netplay netplay/build/lib/libMupen64Plugin.dylib \
+  --netplay netplay/build/lib/mupen64plus-netplay.dylib \
   $ROM_FILE

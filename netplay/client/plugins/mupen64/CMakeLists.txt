@@ -38,9 +38,10 @@ GTEST_ADD_TESTS (Util_test ${GTEST_ARGS} util_test.cc)
 # ------------------------------------------------------------------------------
 # Mupen64Plugin library
 
-ADD_LIBRARY (Mupen64Plugin SHARED mupen64.cc)
+ADD_LIBRARY (mupen64plus-netplay SHARED mupen64.cc)
+SET_TARGET_PROPERTIES (mupen64plus-netplay PROPERTIES PREFIX "")
 
 TARGET_LINK_LIBRARIES (
-  Mupen64Plugin
+  mupen64plus-netplay
   ${M64_PLUGIN_LIBS}
   ${NETPLAY_LIBS})
