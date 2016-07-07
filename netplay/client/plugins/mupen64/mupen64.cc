@@ -134,3 +134,10 @@ int CALL GetKeys(m64p_netplay_frame_update *update) {
 
   return l_PluginImpl->GetButtons(update);
 }
+
+// -----------------------------------------------------------------------------
+// PluginShutdown
+
+EXPORT m64p_error PluginShutdown() {
+  return M64ERR_SUCCESS;
+}

@@ -38,14 +38,22 @@ EXPORT m64p_error CALL PluginGetVersion(m64p_plugin_type *plugin_type,
 // Loads configuration data and connects to the server.
 EXPORT int CALL RomOpen(void);
 
+// Negotiates the connection to the server.
 EXPORT int CALL InitiateNetplay(NETPLAY_INFO *netplay_info,
                                 const char *goodname, const char *md5);
 
+// Called when the ROM is closed.
+// TODO(alexgolec): Cleanly close the netplay connection.
 EXPORT void CALL RomClosed(void);
+
+// Puts and retrieves button updates.
 EXPORT
 int CALL PutKeys(const m64p_netplay_frame_update *updates, int nupdates);
 EXPORT
 int CALL GetKeys(m64p_netplay_frame_update *update);
+
+// Does nothing, only exists to satisfy the Python frontend.
+EXPORT m64p_error PluginShutdown();
 
 }  // extern "C"
 
