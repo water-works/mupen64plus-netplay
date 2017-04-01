@@ -28,7 +28,33 @@ Clone and build the repo:
     cmake .
     make -j8
 
+Run tests. Note the DYLD_FALLBACK_LIBRARY_PATH is necessary because we don't 
+build in the location of many libraries. This is a known issue:
+
+    cd netplay
+    DYLD_FALLBACK_LIBRARY_PATH=$(pwd)/../usr make test
+
 Building - Linux (Debian/Ubuntu)
 --------------------------------
 
-todo...
+Install dependencies:
+
+    sudo apt-get install build-essential git smake libsdl2-dev autoconf \
+                         libtool shtool libpng-dev libfreetype6-dev 
+
+Clone and build the repo:
+
+    git clone https://github.com/water-works/mupen64plus-netplay.git
+    cd mupen64plus-netplay
+
+    # Pull down all dependencies.
+    git submodule update --init --recursive
+
+    # Build
+    cmake .
+    make -j8
+
+Run tests:
+
+    cd netplay
+    make test
