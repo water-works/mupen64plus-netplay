@@ -178,7 +178,8 @@ ExternalProject_Add(
   PREFIX ${GLOG_PREFIX}
 
   SOURCE_DIR ${GLOG_PREFIX}
-  CONFIGURE_COMMAND ${GLOG_PREFIX}/configure --prefix=${INSTALL_PREFIX}
+  CONFIGURE_COMMAND cd ${GLOG_PREFIX} && autoreconf --force --install
+            COMMAND ${GLOG_PREFIX}/configure --prefix=${INSTALL_PREFIX}
 )
 
 # ------------------------------------------------------------------------------
