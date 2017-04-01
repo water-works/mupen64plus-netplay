@@ -45,12 +45,11 @@ ExternalProject_Add (
 
   # Configure step (skip)
   SOURCE_DIR ${PROTO3_PREFIX}
-  CONFIGURE_COMMAND ./autogen.sh
-            COMMAND ./configure --prefix=${INSTALL_PREFIX}
+  CONFIGURE_COMMAND ""
 
   # Build step
   BINARY_DIR ${PROTO3_PREFIX}
-  BUILD_COMMAND make prefix=${INSTALL_PREFIX}
+  BUILD_COMMAND ""
 
   # Install step
   INSTALL_DIR ${INSTALL_PREFIX}
