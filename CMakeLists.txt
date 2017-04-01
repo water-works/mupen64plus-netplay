@@ -140,7 +140,7 @@ ExternalProject_Add(
 
   # Build step
   BINARY_DIR ${MUPEN64PLUS_UI_CONSOLE_PREFIX}
-  BUILD_COMMAND make all
+  BUILD_COMMAND make PIE=1 all
 
   # Install step (skip)
   INSTALL_COMMAND ""
