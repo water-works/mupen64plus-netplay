@@ -82,6 +82,7 @@ class MockClientReaderWriter
   MOCK_METHOD0_T(Finish, grpc::Status());
   MOCK_METHOD2_T(Write, bool(const OutPB &, const grpc::WriteOptions &));
   MOCK_METHOD1_T(Read, bool(InPB *));
+  MOCK_METHOD1_T(NextMessageSize, bool(uint32_t*));
 };
 
 template <typename ButtonsType>
