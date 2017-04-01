@@ -39,7 +39,7 @@ Building - Linux (Debian/Ubuntu)
 
 Install dependencies:
 
-    sudo apt-get install build-essential git smake libsdl2-dev autoconf \
+    sudo apt-get install build-essential git cmake libsdl2-dev autoconf \
                          libtool shtool libpng-dev libfreetype6-dev 
 
 Clone and build the repo:
