@@ -179,9 +179,7 @@ ExternalProject_Add(
   PREFIX ${GLOG_PREFIX}
 
   SOURCE_DIR ${GLOG_PREFIX}
-  CMAKE_ARGS
-    -DCMAKE_INSTALL_PREFIX:PATH=${INSTALL_PREFIX}
-    -DCMAKE_POSITION_INDEPENDENT_CODE:BOOL=True
+  CONFIGURE_COMMAND ${GLOG_PREFIX}/configure --prefix=${INSTALL_PREFIX}
 )
 
 # ------------------------------------------------------------------------------
