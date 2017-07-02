@@ -40,7 +40,7 @@ Building - Linux (Debian/Ubuntu)
 Install dependencies:
 
     sudo apt-get install build-essential git cmake libsdl2-dev autoconf \
-                         libtool shtool libpng-dev libfreetype6-dev 
+                         libtool shtool libpng-dev libfreetype6-dev nasm
 
 Clone and build the repo:
 
