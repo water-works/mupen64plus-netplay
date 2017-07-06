@@ -223,9 +223,58 @@ ExternalProject_Add (
   INSTALL_COMMAND ""
 )
 
+# ------------------------------------------------------------------------------
+# M64Py
+
+SET (M64PY_PREFIX ${CMAKE_SOURCE_DIR}/mupen64plus-ui-python)
+
+FIND_PACKAGE (PythonInterp 3.5 REQUIRED)
+
+ExternalProject_Add(
+  M64PyBuild
+  DEPENDS Netplay
+
+  PREFIX ${M64PY_PREFIX}
+
+  # Configure step (skip)
+  SOURCE_DIR ${M64PY_PREFIX}
+  CONFIGURE_COMMAND ""
+
+  # Build step
+  BINARY_DIR ${M64PY_PREFIX}
+  BUILD_COMMAND ${PYTHON_EXECUTABLE} setup.py build
+
+  # Install step (skip)
+  INSTALL_COMMAND ""
+)
+
+# Delete all M64Py outputs
+IF (APPLE)
+  FILE (REMOVE_RECURSE ${M64PY_PREFIX}/dist/macosx/dmg/M64Py.app)
+  FILE (REMOVE_RECURSE ${M64PY_PREFIX}/dist/macosx/mupen64plus)
+  FILE (
+    COPY
+    mupen64plus-prebuilt/mupen64plus.app
+    DESTINATION ${M64PY_PREFIX}/dist/macosx)
+  FILE(
+    RENAME
+    ${M64PY_PREFIX}/dist/macosx/mupen64plus.app
+    ${M64PY_PREFIX}/dist/macosx/mupen64plus)
+
+  ExternalProject_Add_Step(
+    M64PyBuild BuildDMG
+    WORKING_DIRECTORY ${M64PY_PREFIX}
+    COMMAND ${PYTHON_EXECUTABLE} setup.py build_dmg
+    DEPENDEES build)
+ENDIF()
+
+# ------------------------------------------------------------------------------
+# Misc
+
 ExternalProject_Add_Step (
   Netplay forceconfigure
   COMMAND ${CMAKE_COMMAND} -E echo "Force configure of netplay"
   DEPENDEES update
   DEPENDERS configure
-  ALWAYS 1)
+  ALWAYS 1
+)
