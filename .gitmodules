@@ -25,9 +25,6 @@
 [submodule "netplay/base/netplay-protos"]
 	path = netplay/base/netplay-protos
 	url = https://github.com/water-works/netplay-protos
-[submodule "mupen64plus-helper-scripts"]
-	path = mupen64plus-helper-scripts
-	url = https://github.com/water-works/mupen64plus-helper-scripts
 [submodule "mupen64plus-ui-python"]
 	path = mupen64plus-ui-python
 	url = https://github.com/water-works/mupen64plus-ui-python
