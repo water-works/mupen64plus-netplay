@@ -28,3 +28,4 @@
 [submodule "mupen64plus-ui-python"]
 	path = mupen64plus-ui-python
 	url = https://github.com/water-works/mupen64plus-ui-python
+  ignore = dirty
