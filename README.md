@@ -4,6 +4,16 @@
 This project uses GRPC as a transport mechanism to implement a deterministic 
 lockstep netplay for the mupen64plus emulator.
 
+Notes on Python
+---------------
+
+The M64Py stage of this build uses Python 3.5 and PyInstaller to package up all 
+python dependencies for the application. We recommend using
+[pyenv](https://github.com/pyenv/pyenv) to install a standalone Python 3.5. Once 
+you've installed python, you'll need to install the following packages:
+
+    pip3.5 install PyQt5 PyInstaller pysdl2 grpcioo
+
 Building - Mac OS
 -----------------
 
