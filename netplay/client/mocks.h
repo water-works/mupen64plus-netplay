@@ -21,6 +21,10 @@ class MockNetPlayServerServiceStub
 	       ::grpc::Status(::grpc::ClientContext *context,
 			      const ::MakeConsoleRequestPB &request,
 			      ::MakeConsoleResponsePB *response));
+  MOCK_METHOD3(QueryConsole,
+           ::grpc::Status(::grpc::ClientContext *context,
+                  const ::QueryConsoleRequestPB &request,
+                  :: QueryConsoleResponsePB *response));
   MOCK_METHOD3(PlugController,
 	       ::grpc::Status(::grpc::ClientContext *context,
 			      const ::PlugControllerRequestPB &request,
@@ -39,6 +43,10 @@ class MockNetPlayServerServiceStub
 	       ::grpc::ClientAsyncResponseReaderInterface<::PingPB> *(
 		   ::grpc::ClientContext *context, const ::PingPB &request,
 		   ::grpc::CompletionQueue *cq));
+  MOCK_METHOD3(AsyncQueryConsoleRaw,
+           ::grpc::ClientAsyncResponseReaderInterface<::QueryConsoleResponsePB> *(
+           ::grpc::ClientContext *context, const ::QueryConsoleRequestPB &request,
+           ::grpc::CompletionQueue *cq));
   MOCK_METHOD3(
       AsyncMakeConsoleRaw,
       ::grpc::ClientAsyncResponseReaderInterface<::MakeConsoleResponsePB> *(
