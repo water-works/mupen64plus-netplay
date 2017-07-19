@@ -24,7 +24,7 @@ class MockNetPlayServerServiceStub
   MOCK_METHOD3(QueryConsole,
            ::grpc::Status(::grpc::ClientContext *context,
                   const ::QueryConsoleRequestPB &request,
-                  :: QueryConsoleResponsePB *response));
+                  ::QueryConsoleResponsePB *response));
   MOCK_METHOD3(PlugController,
 	       ::grpc::Status(::grpc::ClientContext *context,
 			      const ::PlugControllerRequestPB &request,
