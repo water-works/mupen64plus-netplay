@@ -169,6 +169,21 @@ ExternalProject_Add(
 )
 
 # ------------------------------------------------------------------------------
+# grpc-swift
+
+SET (GRPCSWIFT_PREFIX ${CMAKE_SOURCE_DIR}/third-party/grpc-swift)
+
+ExternalProject_Add(
+  GRpc_Swift
+  PREFIX ${GRPCSWIFT_PREFIX}
+
+  SOURCE_DIR ${GRPCSWIFT_PREFIX}
+  CMAKE_ARGS
+    -DCMAKE_INSTALL_PREFIX:PATH=${INSTALL_PREFIX}
+    -DCMAKE_POSITION_INDEPENDENT_CODE:BOOL=True
+)
+
+# ------------------------------------------------------------------------------
 # GLog
 
 SET (GLOG_PREFIX ${CMAKE_SOURCE_DIR}/third-party/glog)
@@ -209,8 +224,8 @@ ExternalProject_Add (
     -DCMAKE_LIBRARY_PATH:string=${INSTALL_PREFIX}/lib
     -DCMAKE_PROGRAM_PATH:string=${INSTALL_PREFIX}/bin
     -DCMAKE_INCLUDE_PATH:string=${INSTALL_PREFIX}/include
-    # TODO(alexgolec): LLVM 7.0.0 on OSX complains about missing overrides in 
-    # GRPC headers. Hopefully those headers will eventually be updated, so 
+    # TODO(alexgolec): LLVM 7.0.0 on OSX complains about missing overrides in
+    # GRPC headers. Hopefully those headers will eventually be updated, so
     # remove this once that happens.
     -DCMAKE_CXX_FLAGS:string=-Wno-inconsistent-missing-override
     -DCMAKE_BUILD_TYPE:string=Debug
