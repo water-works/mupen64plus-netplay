@@ -169,21 +169,6 @@ ExternalProject_Add(
 )
 
 # ------------------------------------------------------------------------------
-# grpc-swift
-
-SET (GRPCSWIFT_PREFIX ${CMAKE_SOURCE_DIR}/third-party/grpc-swift)
-
-ExternalProject_Add(
-  GRpc_Swift
-  PREFIX ${GRPCSWIFT_PREFIX}
-
-  SOURCE_DIR ${GRPCSWIFT_PREFIX}
-  CMAKE_ARGS
-    -DCMAKE_INSTALL_PREFIX:PATH=${INSTALL_PREFIX}
-    -DCMAKE_POSITION_INDEPENDENT_CODE:BOOL=True
-)
-
-# ------------------------------------------------------------------------------
 # GLog
 
 SET (GLOG_PREFIX ${CMAKE_SOURCE_DIR}/third-party/glog)
