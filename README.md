@@ -13,8 +13,7 @@ package manager:
     # Install necessary packages
     brew install cmake automake libtool automake autoconf gettext sdl sdl2 pkg-config freetype libpng
 
-    # Install the latest version of XCode
-    xcode-select --install
+From the App Store, install the [latest version of Xcode](https://itunes.apple.com/us/app/xcode/id497799835?mt=12) (necessary to get the MacOS Platform command line tools).
 
 Clone and build the repo:
 
