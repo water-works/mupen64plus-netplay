@@ -4,4 +4,7 @@
    <FileRef
       location = "group:MacosNetplayApp/MacosNetplayApp.xcodeproj">
    </FileRef>
+   <FileRef
+      location = "group:../third-party/grpc-swift/SwiftGRPC.xcodeproj">
+   </FileRef>
 </Workspace>

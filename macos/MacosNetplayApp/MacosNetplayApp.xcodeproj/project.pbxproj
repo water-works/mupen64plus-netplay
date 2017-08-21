@@ -13,6 +13,10 @@
 		7A32160D1F4A0699005C9F5A /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7A32160B1F4A0699005C9F5A /* Main.storyboard */; };
 		7A3216181F4A0699005C9F5A /* MacosNetplayAppTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A3216171F4A0699005C9F5A /* MacosNetplayAppTests.swift */; };
 		7A3216231F4A0699005C9F5A /* MacosNetplayAppUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A3216221F4A0699005C9F5A /* MacosNetplayAppUITests.swift */; };
+		7A764A531F4A5952000952DD /* gRPC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A852A951F4A1E9C00538F8F /* gRPC.framework */; };
+		7A764A571F4A5952000952DD /* BoringSSL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A764A541F4A5952000952DD /* BoringSSL.framework */; };
+		7A764A581F4A5952000952DD /* CgRPC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A764A551F4A5952000952DD /* CgRPC.framework */; };
+		7A764A591F4A5952000952DD /* Czlib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A764A561F4A5952000952DD /* Czlib.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -45,6 +49,10 @@
 		7A32161E1F4A0699005C9F5A /* MacosNetplayAppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MacosNetplayAppUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		7A3216221F4A0699005C9F5A /* MacosNetplayAppUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacosNetplayAppUITests.swift; sourceTree = "<group>"; };
 		7A3216241F4A0699005C9F5A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		7A764A541F4A5952000952DD /* BoringSSL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BoringSSL.framework; path = "../../../../Library/Developer/Xcode/DerivedData/MacosNetplay-eysvgwsnkvvazkbfqmlrgndyfmug/Build/Products/Debug/BoringSSL.framework"; sourceTree = "<group>"; };
+		7A764A551F4A5952000952DD /* CgRPC.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CgRPC.framework; path = "../../../../Library/Developer/Xcode/DerivedData/MacosNetplay-eysvgwsnkvvazkbfqmlrgndyfmug/Build/Products/Debug/CgRPC.framework"; sourceTree = "<group>"; };
+		7A764A561F4A5952000952DD /* Czlib.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Czlib.framework; path = "../../../../Library/Developer/Xcode/DerivedData/MacosNetplay-eysvgwsnkvvazkbfqmlrgndyfmug/Build/Products/Debug/Czlib.framework"; sourceTree = "<group>"; };
+		7A852A951F4A1E9C00538F8F /* gRPC.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = gRPC.framework; path = "../../../../Library/Developer/Xcode/DerivedData/MacosNetplay-eysvgwsnkvvazkbfqmlrgndyfmug/Build/Products/Debug/gRPC.framework"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -52,6 +60,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7A764A591F4A5952000952DD /* Czlib.framework in Frameworks */,
+				7A764A581F4A5952000952DD /* CgRPC.framework in Frameworks */,
+				7A764A571F4A5952000952DD /* BoringSSL.framework in Frameworks */,
+				7A764A531F4A5952000952DD /* gRPC.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -79,6 +91,7 @@
 				7A3216161F4A0699005C9F5A /* MacosNetplayAppTests */,
 				7A3216211F4A0699005C9F5A /* MacosNetplayAppUITests */,
 				7A3216031F4A0699005C9F5A /* Products */,
+				7A852A911F4A1E9C00538F8F /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -120,6 +133,17 @@
 				7A3216241F4A0699005C9F5A /* Info.plist */,
 			);
 			path = MacosNetplayAppUITests;
+			sourceTree = "<group>";
+		};
+		7A852A911F4A1E9C00538F8F /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				7A764A541F4A5952000952DD /* BoringSSL.framework */,
+				7A764A551F4A5952000952DD /* CgRPC.framework */,
+				7A764A561F4A5952000952DD /* Czlib.framework */,
+				7A852A951F4A1E9C00538F8F /* gRPC.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -498,6 +522,7 @@
 				7A3216291F4A0699005C9F5A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		7A32162A1F4A0699005C9F5A /* Build configuration list for PBXNativeTarget "MacosNetplayAppTests" */ = {
 			isa = XCConfigurationList;
@@ -506,6 +531,7 @@
 				7A32162C1F4A0699005C9F5A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		7A32162D1F4A0699005C9F5A /* Build configuration list for PBXNativeTarget "MacosNetplayAppUITests" */ = {
 			isa = XCConfigurationList;
@@ -514,6 +540,7 @@
 				7A32162F1F4A0699005C9F5A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

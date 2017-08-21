@@ -7,6 +7,7 @@
 //
 
 import Cocoa
+import gRPC
 
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
@@ -23,4 +24,3 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
 
 }
-
