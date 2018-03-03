@@ -1,0 +1,4 @@
+module BoringSSL {
+    umbrella "/Users/jonn/workspaces/mupen64plus-netplay/macos/netplay/.build/checkouts/grpc-swift.git-1944885664151884802/Sources/BoringSSL/include"
+    export *
+}
