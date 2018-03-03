@@ -1,0 +1,548 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		7A3216061F4A0699005C9F5A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A3216051F4A0699005C9F5A /* AppDelegate.swift */; };
+		7A3216081F4A0699005C9F5A /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A3216071F4A0699005C9F5A /* ViewController.swift */; };
+		7A32160A1F4A0699005C9F5A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7A3216091F4A0699005C9F5A /* Assets.xcassets */; };
+		7A32160D1F4A0699005C9F5A /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7A32160B1F4A0699005C9F5A /* Main.storyboard */; };
+		7A3216181F4A0699005C9F5A /* MacosNetplayAppTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A3216171F4A0699005C9F5A /* MacosNetplayAppTests.swift */; };
+		7A3216231F4A0699005C9F5A /* MacosNetplayAppUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A3216221F4A0699005C9F5A /* MacosNetplayAppUITests.swift */; };
+		7A764A531F4A5952000952DD /* gRPC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A852A951F4A1E9C00538F8F /* gRPC.framework */; };
+		7A764A571F4A5952000952DD /* BoringSSL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A764A541F4A5952000952DD /* BoringSSL.framework */; };
+		7A764A581F4A5952000952DD /* CgRPC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A764A551F4A5952000952DD /* CgRPC.framework */; };
+		7A764A591F4A5952000952DD /* Czlib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A764A561F4A5952000952DD /* Czlib.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		7A3216141F4A0699005C9F5A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7A3215FA1F4A0699005C9F5A /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 7A3216011F4A0699005C9F5A;
+			remoteInfo = MacosNetplayApp;
+		};
+		7A32161F1F4A0699005C9F5A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7A3215FA1F4A0699005C9F5A /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 7A3216011F4A0699005C9F5A;
+			remoteInfo = MacosNetplayApp;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		7A3216021F4A0699005C9F5A /* MacosNetplayApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MacosNetplayApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		7A3216051F4A0699005C9F5A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		7A3216071F4A0699005C9F5A /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		7A3216091F4A0699005C9F5A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		7A32160C1F4A0699005C9F5A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		7A32160E1F4A0699005C9F5A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		7A3216131F4A0699005C9F5A /* MacosNetplayAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MacosNetplayAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		7A3216171F4A0699005C9F5A /* MacosNetplayAppTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacosNetplayAppTests.swift; sourceTree = "<group>"; };
+		7A3216191F4A0699005C9F5A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		7A32161E1F4A0699005C9F5A /* MacosNetplayAppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MacosNetplayAppUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		7A3216221F4A0699005C9F5A /* MacosNetplayAppUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacosNetplayAppUITests.swift; sourceTree = "<group>"; };
+		7A3216241F4A0699005C9F5A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		7A764A541F4A5952000952DD /* BoringSSL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BoringSSL.framework; path = "../../../../Library/Developer/Xcode/DerivedData/MacosNetplay-eysvgwsnkvvazkbfqmlrgndyfmug/Build/Products/Debug/BoringSSL.framework"; sourceTree = "<group>"; };
+		7A764A551F4A5952000952DD /* CgRPC.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CgRPC.framework; path = "../../../../Library/Developer/Xcode/DerivedData/MacosNetplay-eysvgwsnkvvazkbfqmlrgndyfmug/Build/Products/Debug/CgRPC.framework"; sourceTree = "<group>"; };
+		7A764A561F4A5952000952DD /* Czlib.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Czlib.framework; path = "../../../../Library/Developer/Xcode/DerivedData/MacosNetplay-eysvgwsnkvvazkbfqmlrgndyfmug/Build/Products/Debug/Czlib.framework"; sourceTree = "<group>"; };
+		7A852A951F4A1E9C00538F8F /* gRPC.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = gRPC.framework; path = "../../../../Library/Developer/Xcode/DerivedData/MacosNetplay-eysvgwsnkvvazkbfqmlrgndyfmug/Build/Products/Debug/gRPC.framework"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		7A3215FF1F4A0699005C9F5A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7A764A591F4A5952000952DD /* Czlib.framework in Frameworks */,
+				7A764A581F4A5952000952DD /* CgRPC.framework in Frameworks */,
+				7A764A571F4A5952000952DD /* BoringSSL.framework in Frameworks */,
+				7A764A531F4A5952000952DD /* gRPC.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		7A3216101F4A0699005C9F5A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		7A32161B1F4A0699005C9F5A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		7A3215F91F4A0699005C9F5A = {
+			isa = PBXGroup;
+			children = (
+				7A3216041F4A0699005C9F5A /* MacosNetplayApp */,
+				7A3216161F4A0699005C9F5A /* MacosNetplayAppTests */,
+				7A3216211F4A0699005C9F5A /* MacosNetplayAppUITests */,
+				7A3216031F4A0699005C9F5A /* Products */,
+				7A852A911F4A1E9C00538F8F /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		7A3216031F4A0699005C9F5A /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				7A3216021F4A0699005C9F5A /* MacosNetplayApp.app */,
+				7A3216131F4A0699005C9F5A /* MacosNetplayAppTests.xctest */,
+				7A32161E1F4A0699005C9F5A /* MacosNetplayAppUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		7A3216041F4A0699005C9F5A /* MacosNetplayApp */ = {
+			isa = PBXGroup;
+			children = (
+				7A3216051F4A0699005C9F5A /* AppDelegate.swift */,
+				7A3216071F4A0699005C9F5A /* ViewController.swift */,
+				7A3216091F4A0699005C9F5A /* Assets.xcassets */,
+				7A32160B1F4A0699005C9F5A /* Main.storyboard */,
+				7A32160E1F4A0699005C9F5A /* Info.plist */,
+			);
+			path = MacosNetplayApp;
+			sourceTree = "<group>";
+		};
+		7A3216161F4A0699005C9F5A /* MacosNetplayAppTests */ = {
+			isa = PBXGroup;
+			children = (
+				7A3216171F4A0699005C9F5A /* MacosNetplayAppTests.swift */,
+				7A3216191F4A0699005C9F5A /* Info.plist */,
+			);
+			path = MacosNetplayAppTests;
+			sourceTree = "<group>";
+		};
+		7A3216211F4A0699005C9F5A /* MacosNetplayAppUITests */ = {
+			isa = PBXGroup;
+			children = (
+				7A3216221F4A0699005C9F5A /* MacosNetplayAppUITests.swift */,
+				7A3216241F4A0699005C9F5A /* Info.plist */,
+			);
+			path = MacosNetplayAppUITests;
+			sourceTree = "<group>";
+		};
+		7A852A911F4A1E9C00538F8F /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				7A764A541F4A5952000952DD /* BoringSSL.framework */,
+				7A764A551F4A5952000952DD /* CgRPC.framework */,
+				7A764A561F4A5952000952DD /* Czlib.framework */,
+				7A852A951F4A1E9C00538F8F /* gRPC.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		7A3216011F4A0699005C9F5A /* MacosNetplayApp */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7A3216271F4A0699005C9F5A /* Build configuration list for PBXNativeTarget "MacosNetplayApp" */;
+			buildPhases = (
+				7A3215FE1F4A0699005C9F5A /* Sources */,
+				7A3215FF1F4A0699005C9F5A /* Frameworks */,
+				7A3216001F4A0699005C9F5A /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = MacosNetplayApp;
+			productName = MacosNetplayApp;
+			productReference = 7A3216021F4A0699005C9F5A /* MacosNetplayApp.app */;
+			productType = "com.apple.product-type.application";
+		};
+		7A3216121F4A0699005C9F5A /* MacosNetplayAppTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7A32162A1F4A0699005C9F5A /* Build configuration list for PBXNativeTarget "MacosNetplayAppTests" */;
+			buildPhases = (
+				7A32160F1F4A0699005C9F5A /* Sources */,
+				7A3216101F4A0699005C9F5A /* Frameworks */,
+				7A3216111F4A0699005C9F5A /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				7A3216151F4A0699005C9F5A /* PBXTargetDependency */,
+			);
+			name = MacosNetplayAppTests;
+			productName = MacosNetplayAppTests;
+			productReference = 7A3216131F4A0699005C9F5A /* MacosNetplayAppTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		7A32161D1F4A0699005C9F5A /* MacosNetplayAppUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7A32162D1F4A0699005C9F5A /* Build configuration list for PBXNativeTarget "MacosNetplayAppUITests" */;
+			buildPhases = (
+				7A32161A1F4A0699005C9F5A /* Sources */,
+				7A32161B1F4A0699005C9F5A /* Frameworks */,
+				7A32161C1F4A0699005C9F5A /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				7A3216201F4A0699005C9F5A /* PBXTargetDependency */,
+			);
+			name = MacosNetplayAppUITests;
+			productName = MacosNetplayAppUITests;
+			productReference = 7A32161E1F4A0699005C9F5A /* MacosNetplayAppUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		7A3215FA1F4A0699005C9F5A /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 0830;
+				LastUpgradeCheck = 0830;
+				ORGANIZATIONNAME = "Water Works";
+				TargetAttributes = {
+					7A3216011F4A0699005C9F5A = {
+						CreatedOnToolsVersion = 8.3.3;
+						ProvisioningStyle = Automatic;
+					};
+					7A3216121F4A0699005C9F5A = {
+						CreatedOnToolsVersion = 8.3.3;
+						ProvisioningStyle = Automatic;
+						TestTargetID = 7A3216011F4A0699005C9F5A;
+					};
+					7A32161D1F4A0699005C9F5A = {
+						CreatedOnToolsVersion = 8.3.3;
+						ProvisioningStyle = Automatic;
+						TestTargetID = 7A3216011F4A0699005C9F5A;
+					};
+				};
+			};
+			buildConfigurationList = 7A3215FD1F4A0699005C9F5A /* Build configuration list for PBXProject "MacosNetplayApp" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 7A3215F91F4A0699005C9F5A;
+			productRefGroup = 7A3216031F4A0699005C9F5A /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				7A3216011F4A0699005C9F5A /* MacosNetplayApp */,
+				7A3216121F4A0699005C9F5A /* MacosNetplayAppTests */,
+				7A32161D1F4A0699005C9F5A /* MacosNetplayAppUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		7A3216001F4A0699005C9F5A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7A32160A1F4A0699005C9F5A /* Assets.xcassets in Resources */,
+				7A32160D1F4A0699005C9F5A /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		7A3216111F4A0699005C9F5A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		7A32161C1F4A0699005C9F5A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		7A3215FE1F4A0699005C9F5A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7A3216081F4A0699005C9F5A /* ViewController.swift in Sources */,
+				7A3216061F4A0699005C9F5A /* AppDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		7A32160F1F4A0699005C9F5A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7A3216181F4A0699005C9F5A /* MacosNetplayAppTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		7A32161A1F4A0699005C9F5A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7A3216231F4A0699005C9F5A /* MacosNetplayAppUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		7A3216151F4A0699005C9F5A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 7A3216011F4A0699005C9F5A /* MacosNetplayApp */;
+			targetProxy = 7A3216141F4A0699005C9F5A /* PBXContainerItemProxy */;
+		};
+		7A3216201F4A0699005C9F5A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 7A3216011F4A0699005C9F5A /* MacosNetplayApp */;
+			targetProxy = 7A32161F1F4A0699005C9F5A /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		7A32160B1F4A0699005C9F5A /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				7A32160C1F4A0699005C9F5A /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		7A3216251F4A0699005C9F5A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		7A3216261F4A0699005C9F5A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = macosx;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+			};
+			name = Release;
+		};
+		7A3216281F4A0699005C9F5A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = MacosNetplayApp/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.waterworks.MacosNetplayApp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+			};
+			name = Debug;
+		};
+		7A3216291F4A0699005C9F5A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = MacosNetplayApp/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.waterworks.MacosNetplayApp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+			};
+			name = Release;
+		};
+		7A32162B1F4A0699005C9F5A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = MacosNetplayAppTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.waterworks.MacosNetplayAppTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MacosNetplayApp.app/Contents/MacOS/MacosNetplayApp";
+			};
+			name = Debug;
+		};
+		7A32162C1F4A0699005C9F5A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = MacosNetplayAppTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.waterworks.MacosNetplayAppTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MacosNetplayApp.app/Contents/MacOS/MacosNetplayApp";
+			};
+			name = Release;
+		};
+		7A32162E1F4A0699005C9F5A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = MacosNetplayAppUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.waterworks.MacosNetplayAppUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+				TEST_TARGET_NAME = MacosNetplayApp;
+			};
+			name = Debug;
+		};
+		7A32162F1F4A0699005C9F5A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = MacosNetplayAppUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.waterworks.MacosNetplayAppUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+				TEST_TARGET_NAME = MacosNetplayApp;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		7A3215FD1F4A0699005C9F5A /* Build configuration list for PBXProject "MacosNetplayApp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7A3216251F4A0699005C9F5A /* Debug */,
+				7A3216261F4A0699005C9F5A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		7A3216271F4A0699005C9F5A /* Build configuration list for PBXNativeTarget "MacosNetplayApp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7A3216281F4A0699005C9F5A /* Debug */,
+				7A3216291F4A0699005C9F5A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		7A32162A1F4A0699005C9F5A /* Build configuration list for PBXNativeTarget "MacosNetplayAppTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7A32162B1F4A0699005C9F5A /* Debug */,
+				7A32162C1F4A0699005C9F5A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		7A32162D1F4A0699005C9F5A /* Build configuration list for PBXNativeTarget "MacosNetplayAppUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7A32162E1F4A0699005C9F5A /* Debug */,
+				7A32162F1F4A0699005C9F5A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 7A3215FA1F4A0699005C9F5A /* Project object */;
+}

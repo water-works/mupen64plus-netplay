@@ -209,8 +209,8 @@ ExternalProject_Add (
     -DCMAKE_LIBRARY_PATH:string=${INSTALL_PREFIX}/lib
     -DCMAKE_PROGRAM_PATH:string=${INSTALL_PREFIX}/bin
     -DCMAKE_INCLUDE_PATH:string=${INSTALL_PREFIX}/include
-    # TODO(alexgolec): LLVM 7.0.0 on OSX complains about missing overrides in 
-    # GRPC headers. Hopefully those headers will eventually be updated, so 
+    # TODO(alexgolec): LLVM 7.0.0 on OSX complains about missing overrides in
+    # GRPC headers. Hopefully those headers will eventually be updated, so
     # remove this once that happens.
     -DCMAKE_CXX_FLAGS:string=-Wno-inconsistent-missing-override
     -DCMAKE_BUILD_TYPE:string=Debug
