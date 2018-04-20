@@ -2,11 +2,11 @@
 
 Enabled = True
 # Hostname of the Netplay server.
-ServerHostname = "netplay.alexgolec.com"
+ServerHostname = "netplay.jonnjonnjonn.com"
 # Port of the Netplay server
 ServerPort = 54545
 # Number of frames by which to delay read inputs
-DelayFrames = 5
+DelayFrames = 2
 # Requested report port allocated for port 1. -1: no allocation, 0: any available port , 1-4: Specific port
 Port1Request = 0
 # Requested report port allocated for port 1. -1: no allocation, 0: any available port , 1-4: Specific port
