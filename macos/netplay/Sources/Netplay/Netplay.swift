@@ -1,8 +1,8 @@
-// Proof of concept import. 
-import SwiftGRPC
+// import gRPC
 
 public class NetplayClient {
     public init() {
+        // gRPC.initialize()
     }
     
     public func greet() -> String {
