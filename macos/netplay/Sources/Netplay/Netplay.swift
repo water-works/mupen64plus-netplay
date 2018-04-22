@@ -1,8 +1,8 @@
-import gRPC
+// import gRPC
 
 public class NetplayClient {
     public init() {
-        gRPC.initialize()
+        // gRPC.initialize()
     }
     
     public func greet() -> String {

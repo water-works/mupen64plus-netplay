@@ -1,4 +1,0 @@
-module Czlib {
-    umbrella "/Users/jonn/workspaces/mupen64plus-netplay/macos/netplay/.build/checkouts/zlib.git--9016602441419864029/Sources/Czlib/include"
-    export *
-}
